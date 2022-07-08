@@ -7,7 +7,7 @@ public class CameraControl : MonoBehaviour
 {
     public float move_speed = 0.1f;
     public float zoom_speed = 10f;
-    Camera camera;
+    new Camera camera;
 
     void Start()
     {
@@ -19,7 +19,7 @@ public class CameraControl : MonoBehaviour
         Camera_Zoom();
         Camera_Move();
     }
-    //줌 기능
+    //카메라 줌 기능
     void Camera_Zoom()
     {
         if(camera.orthographicSize >= 10)
@@ -46,10 +46,10 @@ public class CameraControl : MonoBehaviour
         else
             camera.orthographicSize -= scroll * 0.5f;
     }
-
+    //카메라 이동 기능
     void Camera_Move()
     {
-        move_speed = (camera.orthographicSize * 0.01f);
+        move_speed = (camera.orthographicSize * camera.orthographicSize * 0.0005f);
 
         if (Input.GetKey(KeyCode.W))
         {
