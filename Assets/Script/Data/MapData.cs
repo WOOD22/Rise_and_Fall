@@ -7,7 +7,7 @@ using System.IO;
 public class MapData : MonoBehaviour
 {
     public Map map;
-
+    /*  세이브  */
     public void Save_File(string file_name)
     {
         if (!Directory.Exists(Application.persistentDataPath + "/Map"))
