@@ -8,8 +8,16 @@ using System.IO;
 public class MapEdit : MonoBehaviour
 {
     public GameObject DataManager;
+
     public GameObject MapSaveFile_content;
     public GameObject map_save_file;
+
+    public GameObject MapLoadFile_content;
+    public GameObject map_load_file;
+
+    public InputField save_map_name;
+
+    public string file_name;
 
     public Text new_map_name;
     public Text new_map_size_x;
@@ -19,6 +27,8 @@ public class MapEdit : MonoBehaviour
 
     public GameObject tile_layer_1;
     public GameObject test_tile;
+
+    public Sprite null_tile;
     //  레이어 1
     public Sprite ocean_tile;
     public Sprite plain_tile;
@@ -29,7 +39,7 @@ public class MapEdit : MonoBehaviour
 
     void Start()
     {
-        //map = DataManager.GetComponent<MapData>().map;
+
     }
 
     void Update()
@@ -57,7 +67,7 @@ public class MapEdit : MonoBehaviour
             }
         }
     }
-    //세이브페이지 오픈
+    //  세이브 페이지 오픈
     public void OpenSavePage()
     {
         if (!Directory.Exists(Application.persistentDataPath + "/Map"))
@@ -69,32 +79,62 @@ public class MapEdit : MonoBehaviour
         FileInfo[] fi = di.GetFiles("*.*");
         for (int i = 0; i < fi.Length; i++)
         {
-            //생성된 맵세이브파일 프리팹이 실제 맵세이브 파일보다 적을 경우 새로운 프리팹 생성
+            //  생성된 맵세이브파일 프리팹이 실제 맵세이브 파일보다 적을 경우 새로운 프리팹 생성
             if (MapSaveFile_content.transform.childCount < fi.Length)
             {
                 GameObject instance = Instantiate(map_save_file, MapSaveFile_content.transform);
-                instance.transform.GetChild(0).GetComponent<Text>().text = fi[i].Name;
+                instance.transform.GetChild(0).GetComponent<Text>().text = fi[i].Name.Substring(0, fi[i].Name.IndexOf('.'));
             }
         }
     }
+    //  로드 페이지 오픈
+    public void OpenLoadPage()
+    {
+        if (!Directory.Exists(Application.persistentDataPath + "/Map"))
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + "/Map");
+        }
 
+        DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath + "/Map");
+        FileInfo[] fi = di.GetFiles("*.*");
+        for (int i = 0; i < fi.Length; i++)
+        {
+            //  생성된 맵세이브파일 프리팹이 실제 맵세이브 파일보다 적을 경우 새로운 프리팹 생성
+            if (MapLoadFile_content.transform.childCount < fi.Length)
+            {
+                GameObject instance = Instantiate(map_load_file, MapLoadFile_content.transform);
+                instance.transform.GetChild(0).GetComponent<Text>().text = fi[i].Name.Substring(0, fi[i].Name.IndexOf('.'));
+            }
+        }
+    }
+    //  맵 저장하기
     public void Save_Map()
     {
-        DataManager.GetComponent<MapData>().Save_File(map.name);
+        DataManager.GetComponent<MapData>().Save_File(save_map_name.text);
     }
-
-    public void Load_Map(string map_name)
+    //  맵 불러오기
+    public void Load_Map()
     {
-        DataManager.GetComponent<MapData>().Load_File(map_name);
+        DataManager.GetComponent<MapData>().Load_File(file_name);
         map = DataManager.GetComponent<MapData>().map;
-
+        //맵 초기화(남는 타일은 비활성화 한다.)
+        for (int i = 0; i < tile_layer_1.transform.childCount; i++)
+        {
+            if (tile_layer_1.transform.childCount > map.size_x * map.size_y)
+            {
+                tile_layer_1.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().sprite = null_tile;
+            }
+        }
+        //  맵 구성하기, 이미 타일이 존재할 경우 재활용
         for (int i = 0; i < map.size_x; i++)
         {
             for (int j = 0; j < map.size_y; j++)
             {
+                //  1레이어********************************************************************************************
+                //      바다 타일
                 if (map.map_layer_1[j + i * map.size_y] == 1)
                 {
-                    if (tile_layer_1.transform.childCount < (j + i * map.size_y))
+                    if (tile_layer_1.transform.childCount <= (j + i * map.size_y))
                     {
                         GameObject instance = Instantiate(test_tile, tile_layer_1.transform);
                         instance.GetComponent<SpriteRenderer>().sprite = ocean_tile;
@@ -104,11 +144,13 @@ public class MapEdit : MonoBehaviour
                     else
                     {
                         tile_layer_1.transform.GetChild(j + i * map.size_y).gameObject.GetComponent<SpriteRenderer>().sprite = ocean_tile;
+                        tile_layer_1.transform.GetChild(j + i * map.size_y).localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
                     }
                 }
+                //      평지 타일
                 if (map.map_layer_1[j + i * map.size_y] == 2)
                 {
-                    if (tile_layer_1.transform.childCount < (j + i * map.size_y))
+                    if (tile_layer_1.transform.childCount <= (j + i * map.size_y))
                     {
                         GameObject instance = Instantiate(test_tile, tile_layer_1.transform);
                         instance.GetComponent<SpriteRenderer>().sprite = plain_tile;
@@ -118,6 +160,7 @@ public class MapEdit : MonoBehaviour
                     else
                     {
                         tile_layer_1.transform.GetChild(j + i * map.size_y).gameObject.GetComponent<SpriteRenderer>().sprite = plain_tile;
+                        tile_layer_1.transform.GetChild(j + i * map.size_y).localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
                     }
                 }
             }
