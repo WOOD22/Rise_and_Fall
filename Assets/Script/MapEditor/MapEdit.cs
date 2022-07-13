@@ -29,24 +29,29 @@ public class MapEdit : MonoBehaviour
     public GameObject test_tile;
 
     public Sprite null_tile;
-    //  레이어 1
-    public Sprite ocean_tile;
-    public Sprite plain_tile;
-    public Sprite hill_tile;
-    public Sprite mountain_tile;
+    //  1레이어(고저)
+    public Sprite ocean_tile;       //  1번 바다 타일
+    public Sprite plain_tile;       //  2번 평지 타일
+    public Sprite hill_tile;        //  3번 언덕 타일
+    public Sprite mountain_tile;    //  4번 산 타일
+
+    public GameObject select_layer;
+    public Sprite select_tile_sprite;
+    public int select_tile_type;
 
     public bool is_tool_pen = false;
 
     void Start()
     {
-
+        select_tile_sprite = null_tile;
+        select_tile_type = 0;
     }
 
     void Update()
     {
-        Tool_Pen();
+        Tool_Pen(map.map_layer_1, select_tile_sprite, select_tile_type);
     }
-
+    //  새로운 맵 만들기
     public void New_Map()
     {
         map = DataManager.GetComponent<MapData>().map;
@@ -120,9 +125,13 @@ public class MapEdit : MonoBehaviour
         //맵 초기화(남는 타일은 비활성화 한다.)
         for (int i = 0; i < tile_layer_1.transform.childCount; i++)
         {
-            if (tile_layer_1.transform.childCount > map.size_x * map.size_y)
+            if (i > map.size_x * map.size_y)
             {
-                tile_layer_1.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().sprite = null_tile;
+                tile_layer_1.transform.GetChild(i).gameObject.SetActive(false);
+            }
+            else if (i <= map.size_x * map.size_y)
+            {
+                tile_layer_1.transform.GetChild(i).gameObject.SetActive(true);
             }
         }
         //  맵 구성하기, 이미 타일이 존재할 경우 재활용
@@ -131,36 +140,28 @@ public class MapEdit : MonoBehaviour
             for (int j = 0; j < map.size_y; j++)
             {
                 //  1레이어********************************************************************************************
-                //      바다 타일
-                if (map.map_layer_1[j + i * map.size_y] == 1)
+                Matching_Tile(map.map_layer_1, tile_layer_1, 0, null_tile);
+                Matching_Tile(map.map_layer_1, tile_layer_1, 1, ocean_tile);
+                Matching_Tile(map.map_layer_1, tile_layer_1, 2, plain_tile);
+                Matching_Tile(map.map_layer_1, tile_layer_1, 3, hill_tile);
+                //  2레이어********************************************************************************************
+                //  로드 시 map의 정보와 보여지는 타일의 이미지를 일치시킴
+                void Matching_Tile(int[] map_layer, GameObject layer,int tile_type, Sprite tile_sprite)
                 {
-                    if (tile_layer_1.transform.childCount <= (j + i * map.size_y))
+                    if (map_layer[j + i * map.size_y] == tile_type)
                     {
-                        GameObject instance = Instantiate(test_tile, tile_layer_1.transform);
-                        instance.GetComponent<SpriteRenderer>().sprite = ocean_tile;
-                        instance.name = "Tile_" + (j + i * map.size_y);
-                        instance.transform.localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
-                    }
-                    else
-                    {
-                        tile_layer_1.transform.GetChild(j + i * map.size_y).gameObject.GetComponent<SpriteRenderer>().sprite = ocean_tile;
-                        tile_layer_1.transform.GetChild(j + i * map.size_y).localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
-                    }
-                }
-                //      평지 타일
-                if (map.map_layer_1[j + i * map.size_y] == 2)
-                {
-                    if (tile_layer_1.transform.childCount <= (j + i * map.size_y))
-                    {
-                        GameObject instance = Instantiate(test_tile, tile_layer_1.transform);
-                        instance.GetComponent<SpriteRenderer>().sprite = plain_tile;
-                        instance.name = "Tile_" + (j + i * map.size_y);
-                        instance.transform.localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
-                    }
-                    else
-                    {
-                        tile_layer_1.transform.GetChild(j + i * map.size_y).gameObject.GetComponent<SpriteRenderer>().sprite = plain_tile;
-                        tile_layer_1.transform.GetChild(j + i * map.size_y).localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
+                        if (layer.transform.childCount <= (j + i * map.size_y))
+                        {
+                            GameObject instance = Instantiate(test_tile, layer.transform);
+                            instance.GetComponent<SpriteRenderer>().sprite = tile_sprite;
+                            instance.name = "Tile_" + (j + i * map.size_y);
+                            instance.transform.localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
+                        }
+                        else
+                        {
+                            layer.transform.GetChild(j + i * map.size_y).gameObject.GetComponent<SpriteRenderer>().sprite = tile_sprite;
+                            layer.transform.GetChild(j + i * map.size_y).localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
+                        }
                     }
                 }
             }
@@ -182,8 +183,30 @@ public class MapEdit : MonoBehaviour
         }
     }
 
+    public void Select_Tile_Sprite(int tile_type)
+    {
+        switch(tile_type)
+        {
+            case 0:
+                select_tile_sprite = null_tile;
+                break;
+            case 1:
+                select_tile_sprite = ocean_tile;
+                break;
+            case 2:
+                select_tile_sprite = plain_tile;
+                break;
+            case 3:
+                select_tile_sprite = hill_tile;
+                break;
+            case 4:
+                select_tile_sprite = mountain_tile;
+                break;
+        }
+    }
+
     //펜 기능
-    public void Tool_Pen()
+    public void Tool_Pen(int[] map_layer, Sprite tile_sprite, int tile_type)
     {
         if (is_tool_pen && Input.GetMouseButton(0))
         {
@@ -191,12 +214,12 @@ public class MapEdit : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(mouse_position, transform.forward, 15);
             if (hit)
             {
-                hit.transform.gameObject.GetComponent<SpriteRenderer>().sprite = plain_tile;
+                hit.transform.gameObject.GetComponent<SpriteRenderer>().sprite = tile_sprite;
                 if(hit.transform.gameObject.name.Contains("Tile"))
                 {
                     string tile_num = hit.transform.gameObject.name;
                     tile_num = tile_num.Replace("Tile_", "");
-                    map.map_layer_1[int.Parse(tile_num)] = 2;
+                    map.map_layer_1[int.Parse(tile_num)] = tile_type;
                 }
             }
         }

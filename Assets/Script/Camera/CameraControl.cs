@@ -49,6 +49,16 @@ public class CameraControl : MonoBehaviour
     //카메라 이동 기능
     void Camera_Move()
     {
+        Vector3 cilck_point = new Vector3();
+        if (Input.GetMouseButtonDown(2))
+        {
+            cilck_point = (Vector3)Input.mousePosition;
+        }
+            if (Input.GetMouseButton(2))
+        {
+            transform.position += camera.ScreenToViewportPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10) - cilck_point);
+        }
+        /*
         move_speed = (camera.orthographicSize * camera.orthographicSize * 0.0005f);
 
         if (Input.GetKey(KeyCode.W))
@@ -66,6 +76,6 @@ public class CameraControl : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             transform.position += new Vector3(move_speed, 0.0f, 0.0f);
-        }
+        }*/
     }
 }
