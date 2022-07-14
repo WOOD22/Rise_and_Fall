@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.IO;
+using UnityEngine.EventSystems;
 
 public class MapEdit : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class MapEdit : MonoBehaviour
     public Map map;
 
     public GameObject tile_layer_1;
+    public GameObject tile_layer_2;
     public GameObject test_tile;
 
     public Sprite null_tile;
@@ -34,6 +36,14 @@ public class MapEdit : MonoBehaviour
     public Sprite plain_tile;       //  2번 평지 타일
     public Sprite hill_tile;        //  3번 언덕 타일
     public Sprite mountain_tile;    //  4번 산 타일
+    //  2레이어(바이옴)
+    /*
+    public Sprite a_tile;           //  1번 열대 타일
+    public Sprite b_tile;           //  2번 건조 타일
+    public Sprite c_tile;           //  3번 온대 타일
+    public Sprite d_tile;           //  4번 냉대 타일
+    public Sprite e_tile;           //  5번 한대 타일
+    */
 
     public GameObject select_layer;
     public Sprite select_tile_sprite;
@@ -51,7 +61,7 @@ public class MapEdit : MonoBehaviour
     {
         Tool_Pen(map.map_layer_1, select_tile_sprite, select_tile_type);
     }
-    //  새로운 맵 만들기
+    //  새로운 맵 만들기(1레이어, 바다 타일로 초기화)
     public void New_Map()
     {
         map = DataManager.GetComponent<MapData>().map;
@@ -60,15 +70,52 @@ public class MapEdit : MonoBehaviour
         map.size_x = int.Parse(new_map_size_x.text);
         map.size_y = int.Parse(new_map_size_y.text);
         map.map_layer_1 = new int[map.size_x * map.size_y];
+        map.map_layer_2 = new int[map.size_x * map.size_y];
 
         for (int i = 0; i < map.size_x; i++)
         {
             for (int j = 0; j < map.size_y; j++)
             {
-                GameObject instance = Instantiate(test_tile, tile_layer_1.transform);
-                instance.name = "Tile_" + (j + i * map.size_y);
-                instance.transform.localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
                 map.map_layer_1[j + i * map.size_y] = 1;
+            }
+        }
+        for (int i = 0; i < tile_layer_1.transform.childCount; i++)
+        {
+            if (i > map.size_x * map.size_y)
+            {
+                tile_layer_1.transform.GetChild(i).gameObject.SetActive(false);
+            }
+            else if (i <= map.size_x * map.size_y)
+            {
+                tile_layer_1.transform.GetChild(i).gameObject.SetActive(true);
+            }
+        }
+        for (int i = 0; i < map.size_x; i++)
+        {
+            for (int j = 0; j < map.size_y; j++)
+            {
+                //  1레이어********************************************************************************************
+                Matching_Tile(map.map_layer_1, tile_layer_1, 0, null_tile);
+                Matching_Tile(map.map_layer_1, tile_layer_1, 1, ocean_tile);
+                //  로드 시 map의 정보와 보여지는 타일의 이미지를 일치시킴
+                void Matching_Tile(int[] map_layer, GameObject layer, int tile_type, Sprite tile_sprite)
+                {
+                    if (map_layer[j + i * map.size_y] == tile_type)
+                    {
+                        if (layer.transform.childCount <= (j + i * map.size_y))
+                        {
+                            GameObject instance = Instantiate(test_tile, layer.transform);
+                            instance.GetComponent<SpriteRenderer>().sprite = tile_sprite;
+                            instance.name = "Tile_" + (j + i * map.size_y);
+                            instance.transform.localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
+                        }
+                        else
+                        {
+                            layer.transform.GetChild(j + i * map.size_y).gameObject.GetComponent<SpriteRenderer>().sprite = tile_sprite;
+                            layer.transform.GetChild(j + i * map.size_y).localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
+                        }
+                    }
+                }
             }
         }
     }
@@ -182,33 +229,38 @@ public class MapEdit : MonoBehaviour
             }
         }
     }
-
+    //  색칠할 타일 선택
     public void Select_Tile_Sprite(int tile_type)
     {
         switch(tile_type)
         {
             case 0:
                 select_tile_sprite = null_tile;
+                select_tile_type = 0;
                 break;
             case 1:
                 select_tile_sprite = ocean_tile;
+                select_tile_type = 1;
                 break;
             case 2:
                 select_tile_sprite = plain_tile;
+                select_tile_type = 2;
                 break;
             case 3:
                 select_tile_sprite = hill_tile;
+                select_tile_type = 3;
                 break;
             case 4:
                 select_tile_sprite = mountain_tile;
+                select_tile_type = 4;
                 break;
         }
     }
 
-    //펜 기능
+    //  펜 기능
     public void Tool_Pen(int[] map_layer, Sprite tile_sprite, int tile_type)
     {
-        if (is_tool_pen && Input.GetMouseButton(0))
+        if (is_tool_pen && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             Vector3 mouse_position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mouse_position, transform.forward, 15);
@@ -224,9 +276,49 @@ public class MapEdit : MonoBehaviour
             }
         }
     }
-
+    //  펜 활성화
     public void Tool_Use_Pen()
     {
-        is_tool_pen = true;
+        if (!is_tool_pen)
+            is_tool_pen = true;
+        else
+            is_tool_pen = false;
+    }
+    //  바이옴 적용하기
+    public void Apply_Biome()
+    {
+        for (int i = 0; i < map.size_x; i++)
+        {
+            for (int j = 0; j < map.size_y; j++)
+            {
+                int ten_latitude = map.size_y / 18;     //  위도10
+                int equator = map.size_y / 2;           //  적도
+
+                if (j <= equator + ten_latitude && j >= equator - ten_latitude)
+                {
+                    map.map_layer_2[j + i * map.size_y] = 1;
+                }
+                else if (j <= equator + ten_latitude * 3 && j >= equator - ten_latitude * 3)
+                {
+                    map.map_layer_2[j + i * map.size_y] = 2;
+                }
+                else if (j <= equator + ten_latitude * 5 && j >= equator - ten_latitude * 5)
+                {
+                    map.map_layer_2[j + i * map.size_y] = 3;
+                }
+                else if (j <= equator + ten_latitude * 7 && j >= equator - ten_latitude * 7)
+                {
+                    map.map_layer_2[j + i * map.size_y] = 4;
+                }
+                else if (j <= equator + ten_latitude * 9 && j >= equator - ten_latitude * 9)
+                {
+                    map.map_layer_2[j + i * map.size_y] = 5;
+                }
+                else
+                {
+                    map.map_layer_2[j + i * map.size_y] = 5;
+                }
+            }
+        }
     }
 }

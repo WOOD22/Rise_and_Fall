@@ -1,12 +1,13 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.U2D;
 
 public class CameraHandler : MonoBehaviour
 {
     public GameObject DataManager;
 
     private static readonly float ZoomSpeedTouch = 0.1f;
-    private static readonly float ZoomSpeedMouse = 50f;
+    private static readonly float ZoomSpeedMouse = 64f;
 
     private static float[] ZoomBounds = new float[] { 5f, 100f };
 
@@ -118,13 +119,15 @@ public class CameraHandler : MonoBehaviour
 
     void ZoomCamera(float offset, float speed)
     {
-        ZoomBounds = new float[] { 5f, DataManager.GetComponent<MapData>().map.size_y / 2};
+        ZoomBounds = new float[] { 4f, 64f};
         if (offset == 0)
         {
             return;
         }
-         
-        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - (offset * speed), ZoomBounds[0], ZoomBounds[1]);
+        this.GetComponent<PixelPerfectCamera>().assetsPPU = (int)Mathf.Clamp(this.GetComponent<PixelPerfectCamera>().assetsPPU + (offset * speed), ZoomBounds[0], ZoomBounds[1]);
+        if (this.GetComponent<PixelPerfectCamera>().assetsPPU % 4 != 0)
+            this.GetComponent<PixelPerfectCamera>().assetsPPU -= this.GetComponent<PixelPerfectCamera>().assetsPPU % 4;
+        //cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - (offset * speed), ZoomBounds[0], ZoomBounds[1]);
     }
 
     public void PlayerTargetCamera()
