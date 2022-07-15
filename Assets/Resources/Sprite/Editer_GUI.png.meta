@@ -20,6 +20,9 @@ TextureImporter:
   - first:
       213: -4099310329842105357
     second: Editer_GUI_5
+  - first:
+      213: -4704372844366534400
+    second: Editer_GUI_6
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -254,6 +257,27 @@ TextureImporter:
       bones: []
       spriteID: 3f30cad59f25c17c0800000000000000
       internalID: -4099310329842105357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Editer_GUI_6
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 2, z: 2, w: 2}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 009e988a2d5b6beb0800000000000000
+      internalID: -4704372844366534400
       vertices: []
       indices: 
       edges: []
