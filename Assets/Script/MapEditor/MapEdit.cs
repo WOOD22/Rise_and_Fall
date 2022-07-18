@@ -26,49 +26,56 @@ public class MapEdit : MonoBehaviour
 
     public Map map;
 
-    public GameObject tile_layer_1;
-    public GameObject tile_layer_2;
+    public GameObject tile_map;
     public GameObject test_tile;
 
     public Sprite null_tile;
-    //  1레이어(고저)
-    public Sprite ocean_tile;       //  1번 바다 타일
-    public Sprite plain_tile;       //  2번 평지 타일
-    public Sprite hill_tile;        //  3번 언덕 타일
-    public Sprite mountain_tile;    //  4번 산 타일
-    //  2레이어(바이옴)
-    public Sprite a_tile;           //  5번 열대 타일
-    public Sprite b_tile;           //  6번 건조 타일
-    public Sprite c_tile;           //  7번 온대 타일
-    public Sprite d_tile;           //  8번 냉대 타일
-    public Sprite e_tile;           //  9번 한대 타일
-    //  3레이어(수계)
-    public Sprite river_T_tile;     //  10번 T형 강 타일
-    public Sprite river_V_1_tile;   //  11번 V형 강 타일1
-    public Sprite river_V_2_tile;   //  12번 V형 강 타일2
-    public Sprite river_V_3_tile;   //  13번 V형 강 타일3
-    public Sprite river_I_1_tile;   //  14번 I형 강 타일1
-    public Sprite river_I_2_tile;   //  15번 I형 강 타일2
-    public Sprite river_I_3_tile;   //  16번 I형 강 타일3
 
+    //  지형
+    public Sprite ocean_tile;               //  0번 바다 타일
+    public Sprite coast_tile;               //  1번 해안 타일
+    public Sprite lake_tile;                //  2번 호수 타일
+    public Sprite river_tile;               //  3번 큰강 타일
+    public Sprite flat_tile;                //  4번 평지 타일
+    public Sprite hill_tile;                //  5번 언덕 타일
+    public Sprite mountain_tile;            //  6번 산 타일
+    //  바이옴
+    public Sprite tropical_tile;            //  0번 열대 타일
+    public Sprite dry_tile;                 //  1번 건조 타일
+    public Sprite desert_tile;              //  2번 사막 타일
+    public Sprite temperate_tile;           //  3번 온대 타일
+    public Sprite subarctic_tile;           //  4번 냉대 타일
+    public Sprite polar_tile;               //  5번 한대 타일
+    //  자연환경
+    public Sprite jungle_tile;              //  1번 정글 타일
+    public Sprite forest_tile;              //  2번 숲 타일
+    public Sprite marsh_tile;               //  3번 습지 타일
+    //  작은 강
+    public Sprite river_e_tile;             //  1번 동
+    public Sprite river_ne_tile;            //  2번 북동
+    public Sprite river_nw_tile;            //  3번 북서
+    public Sprite river_w_tile;             //  4번 서
+    public Sprite river_sw_tile;            //  5번 남서
+    public Sprite river_se_tile;            //  6번 남동
 
     public Sprite select_tile_sprite;
-    public int[] select_layer;
+    public Tile[] select_layer;
     public int select_tile_type;
 
-    public bool is_tool_pen = false;
+    public bool is_tool_pen = true;
 
     void Start()
     {
         select_tile_sprite = null_tile;
-        select_tile_type = 1;
+        select_tile_type = 0;
     }
 
     void Update()
     {
-        Tool_Pen(select_layer, select_tile_sprite, select_tile_type);
+        Tool_Pen(select_layer, select_tile_type);
     }
-    //  새로운 맵 만들기(1레이어, 바다 타일로 초기화)
+
+    //  새로운 맵 만들기(1레이어, 바다 타일로 초기화)******************************************************************
     public void New_Map()
     {
         map = DataManager.GetComponent<MapData>().map;
@@ -76,63 +83,179 @@ public class MapEdit : MonoBehaviour
         map.name = new_map_name.text;
         map.size_x = int.Parse(new_map_size_x.text);
         map.size_y = int.Parse(new_map_size_y.text);
-        map.map_layer_1 = new int[map.size_x * map.size_y];
-        map.map_layer_2 = new int[map.size_x * map.size_y];
-        map.map_layer_3 = new int[map.size_x * map.size_y];
-        map.map_layer_4 = new int[map.size_x * map.size_y];
-        map.map_layer_5 = new int[map.size_x * map.size_y];
-        map.map_layer_6 = new int[map.size_x * map.size_y];
-        map.map_layer_7 = new int[map.size_x * map.size_y];
+        map.map_info = new Tile[map.size_x * map.size_y];
 
-        select_layer = map.map_layer_1;
+        select_layer = map.map_info;
 
+        //  바다 타일로 초기화
         for (int i = 0; i < map.size_x; i++)
         {
             for (int j = 0; j < map.size_y; j++)
             {
-                map.map_layer_1[j + i * map.size_y] = 1;
+                map.map_info[j + i * map.size_y] = new Tile();
+                map.map_info[j + i * map.size_y].terrain = 0;
             }
         }
-        for (int i = 0; i < tile_layer_1.transform.childCount; i++)
+                //  필요한 수 만큼 타일 추가
+        for (int i = 0; i < map.size_x * map.size_y; i++)
         {
-            if (i > map.size_x * map.size_y)
+            if (tile_map.transform.childCount <= i)
             {
-                tile_layer_1.transform.GetChild(i).gameObject.SetActive(false);
-            }
-            else if (i <= map.size_x * map.size_y)
-            {
-                tile_layer_1.transform.GetChild(i).gameObject.SetActive(true);
+                GameObject instance = Instantiate(test_tile, tile_map.transform);
+                instance.name = "Tile_" + i;
             }
         }
-        for (int i = 0; i < map.size_x; i++)
+        //  필요한 수 만큼 타일 추가 및 활성화, 나머지 비활성화
+        int k = 0;
+        for (int i = 0; i < tile_map.transform.childCount; i++)
         {
-            for (int j = 0; j < map.size_y; j++)
+            if (i >= map.size_x * map.size_y)
             {
-                //  1레이어********************************************************************************************
-                Matching_Tile(map.map_layer_1, tile_layer_1, 0, null_tile);
-                Matching_Tile(map.map_layer_1, tile_layer_1, 1, ocean_tile);
-                //  로드 시 map의 정보와 보여지는 타일의 이미지를 일치시킴
-                void Matching_Tile(int[] map_layer, GameObject layer, int tile_type, Sprite tile_sprite)
+                tile_map.transform.GetChild(i).gameObject.SetActive(false);
+                tile_map.transform.GetChild(i).localPosition = new Vector3(-1000f, -1000f, 0);
+            }
+            else if (i < map.size_x * map.size_y)
+            {
+                if (i % map.size_y == 0 && i != 0)
                 {
-                    if (map_layer[j + i * map.size_y] == tile_type)
-                    {
-                        if (layer.transform.childCount <= (j + i * map.size_y))
-                        {
-                            GameObject instance = Instantiate(test_tile, layer.transform);
-                            instance.GetComponent<SpriteRenderer>().sprite = tile_sprite;
-                            instance.name = "Tile_" + (j + i * map.size_y);
-                            instance.transform.localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
-                        }
-                        else
-                        {
-                            layer.transform.GetChild(j + i * map.size_y).gameObject.GetComponent<SpriteRenderer>().sprite = tile_sprite;
-                            layer.transform.GetChild(j + i * map.size_y).localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
-                        }
-                    }
+                    k++;
                 }
+                tile_map.transform.GetChild(i).gameObject.SetActive(true);
+                tile_map.transform.GetChild(i).localPosition = new Vector3((float)(i % map.size_y * 0.5f + k), (float)(i % map.size_y * 0.75f), 0);
+            }
+        }
+        Matching_Tile_Sprite_Terrain();
+    }
+
+    //  맵 저장하기
+    public void Save_Map()
+    {
+        DataManager.GetComponent<MapData>().Save_File(save_map_name.text);
+    }
+
+    //  맵 불러오기
+    public void Load_Map()
+    {
+        DataManager.GetComponent<MapData>().Load_File(file_name);
+        map = DataManager.GetComponent<MapData>().map;
+        select_layer = map.map_info;
+
+        //  필요한 수 만큼 타일 추가
+        for (int i = 0; i < map.size_x * map.size_y; i++)
+        {
+            if (tile_map.transform.childCount <= i)
+            {
+                GameObject instance = Instantiate(test_tile, tile_map.transform);
+                instance.name = "Tile_" + i;
+            }
+        }
+        //  필요한 수 만큼 타일 활성화, 나머지 비활성화
+        int k = 0;
+        for (int i = 0; i < tile_map.transform.childCount; i++)
+        {
+            if (i >= map.size_x * map.size_y)
+            {
+                tile_map.transform.GetChild(i).gameObject.SetActive(false);
+            }
+            else if (i < map.size_x * map.size_y)
+            {
+                if (i % map.size_y == 0 && i != 0)
+                {
+                    k++;
+                }
+                tile_map.transform.GetChild(i).gameObject.SetActive(true);
+                tile_map.transform.GetChild(i).localPosition = new Vector3((float)(i % map.size_y * 0.5f + k), (float)(i % map.size_y * 0.75f), 0);
+            }
+        }
+        Matching_Tile_Sprite_Terrain();
+    }
+    //  지형 맵 이미지 매칭하기
+    void Matching_Tile_Sprite_Terrain()
+    {
+        for (int i = 0; i < map.size_x * map.size_y; i++)
+        {
+            tile_map.transform.GetChild(i).gameObject.SetActive(true);
+            //  지형 배치
+            switch (map.map_info[i].terrain)
+            {
+                case 0:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = ocean_tile;
+                    break;
+                case 1:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = coast_tile;
+                    break;
+                case 2:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = lake_tile;
+                    break;
+                case 3:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = river_tile;
+                    break;
+                case 4:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = flat_tile;
+                    break;
+                case 5:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = hill_tile;
+                    break;
+                case 6:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = mountain_tile;
+                    break;
+            }
+            /*
+            //  자연 환경 존재 시 배치(자연 환경은 평지 타일에만 배치됨)
+            switch (map.map_info[i].nature)
+            {
+                case 1:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = jungle_tile;
+                    break;
+                case 2:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = forest_tile;
+                    break;
+                case 3:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = marsh_tile;
+                    break;
+            }*/
+        }
+    }
+    //  바이옴 맵 이미지 매칭하기
+    void Matching_Tile_Sprite_Biome()
+    {
+        for (int i = 0; i < map.size_x * map.size_y; i++)
+        {
+            if(map.map_info[i].terrain > 3)
+            {
+                map.map_info[i].biome = 4;
+            }
+            else
+            {
+                tile_map.transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
+        for (int i = 0; i < map.size_x * map.size_y; i++)
+        {
+            switch (map.map_info[i].biome)
+            {
+                case 1:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = tropical_tile;
+                    break;
+                case 2:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = dry_tile;
+                    break;
+                case 3:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = desert_tile;
+                    break;
+                case 4:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = temperate_tile;
+                    break;
+                case 5:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = subarctic_tile;
+                    break;
+                case 6:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = polar_tile;
+                    break;
             }
         }
     }
+
     //  세이브 페이지 오픈
     public void OpenSavePage()
     {
@@ -153,6 +276,7 @@ public class MapEdit : MonoBehaviour
             }
         }
     }
+
     //  로드 페이지 오픈
     public void OpenLoadPage()
     {
@@ -173,78 +297,6 @@ public class MapEdit : MonoBehaviour
             }
         }
     }
-    //  맵 저장하기
-    public void Save_Map()
-    {
-        DataManager.GetComponent<MapData>().Save_File(save_map_name.text);
-    }
-    //  맵 불러오기
-    public void Load_Map()
-    {
-        DataManager.GetComponent<MapData>().Load_File(file_name);
-        map = DataManager.GetComponent<MapData>().map;
-        select_layer = map.map_layer_1;
-        //맵 초기화(남는 타일은 비활성화 한다.)
-        for (int i = 0; i < tile_layer_1.transform.childCount; i++)
-        {
-            if (i > map.size_x * map.size_y)
-            {
-                tile_layer_1.transform.GetChild(i).gameObject.SetActive(false);
-            }
-            else if (i <= map.size_x * map.size_y)
-            {
-                tile_layer_1.transform.GetChild(i).gameObject.SetActive(true);
-            }
-        }
-        //  맵 구성하기, 이미 타일이 존재할 경우 재활용
-        for (int i = 0; i < map.size_x; i++)
-        {
-            for (int j = 0; j < map.size_y; j++)
-            {
-                //  1레이어********************************************************************************************
-                Matching_Tile(map.map_layer_1, tile_layer_1, 0, null_tile);
-                Matching_Tile(map.map_layer_1, tile_layer_1, 1, ocean_tile);
-                Matching_Tile(map.map_layer_1, tile_layer_1, 2, plain_tile);
-                Matching_Tile(map.map_layer_1, tile_layer_1, 3, hill_tile);
-                Matching_Tile(map.map_layer_1, tile_layer_1, 4, mountain_tile);
-                //  2레이어********************************************************************************************
-                //  로드 시 map의 정보와 보여지는 타일의 이미지를 일치시킴
-                void Matching_Tile(int[] map_layer, GameObject layer,int tile_type, Sprite tile_sprite)
-                {
-                    if (map_layer[j + i * map.size_y] == tile_type)
-                    {
-                        if (layer.transform.childCount <= (j + i * map.size_y))
-                        {
-                            GameObject instance = Instantiate(test_tile, layer.transform);
-                            instance.GetComponent<SpriteRenderer>().sprite = tile_sprite;
-                            instance.name = "Tile_" + (j + i * map.size_y);
-                            instance.transform.localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
-                        }
-                        else
-                        {
-                            layer.transform.GetChild(j + i * map.size_y).gameObject.GetComponent<SpriteRenderer>().sprite = tile_sprite;
-                            layer.transform.GetChild(j + i * map.size_y).localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    //맵 채우기
-    void Fill_Map(int _x, int _y, GameObject fill_tile)
-    {
-        for (int i = 0; i < _x; i++)
-        {
-            for (int j = 0; j < _y; j++)
-            {
-                GameObject instance = Instantiate(fill_tile, tile_layer_1.transform);
-                instance.name = "Tile_" + (j + i * _y);
-                instance.transform.localPosition = new Vector3((float)i + (float)j * 0.5f, (float)j * 0.75f, 0);
-                map.map_layer_1[j + i * _y] = 1;
-            }
-        }
-    }
 
     //  색칠할 타일 선택
     public void Select_Tile_Sprite(int tile_type)
@@ -252,128 +304,51 @@ public class MapEdit : MonoBehaviour
         switch(tile_type)
         {
             case 0:
-                select_tile_sprite = null_tile;
+                select_tile_sprite = ocean_tile;
                 select_tile_type = 0;
                 break;
             case 1:
-                select_tile_sprite = ocean_tile;
+                select_tile_sprite = coast_tile;
                 select_tile_type = 1;
                 break;
             case 2:
-                select_tile_sprite = plain_tile;
+                select_tile_sprite = lake_tile;
                 select_tile_type = 2;
                 break;
             case 3:
-                select_tile_sprite = hill_tile;
+                select_tile_sprite = river_tile;
                 select_tile_type = 3;
                 break;
             case 4:
-                select_tile_sprite = mountain_tile;
+                select_tile_sprite = flat_tile;
                 select_tile_type = 4;
                 break;
             case 5:
-                select_tile_sprite = a_tile;
+                select_tile_sprite = hill_tile;
                 select_tile_type = 5;
                 break;
             case 6:
-                select_tile_sprite = b_tile;
+                select_tile_sprite = mountain_tile;
                 select_tile_type = 6;
-                break;
-            case 7:
-                select_tile_sprite = c_tile;
-                select_tile_type = 7;
-                break;
-            case 8:
-                select_tile_sprite = d_tile;
-                select_tile_type = 8;
-                break;
-            case 9:
-                select_tile_sprite = e_tile;
-                select_tile_type = 9;
-                break;
-            case 10:
-                select_tile_sprite = river_T_tile;
-                select_tile_type = 10;
-                break;
-            case 11:
-                select_tile_sprite = river_V_1_tile;
-                select_tile_type = 11;
-                break;
-            case 12:
-                select_tile_sprite = river_V_2_tile;
-                select_tile_type = 12;
-                break;
-            case 13:
-                select_tile_sprite = river_V_3_tile;
-                select_tile_type = 13;
-                break;
-            case 14:
-                select_tile_sprite = river_I_1_tile;
-                select_tile_type = 14;
-                break;
-            case 15:
-                select_tile_sprite = river_I_2_tile;
-                select_tile_type = 15;
-                break;
-            case 16:
-                select_tile_sprite = river_I_3_tile;
-                select_tile_type = 16;
                 break;
         }
     }
-
-    //  하이라이트 될 레이어 선택 
+    
+    //  하이라이트 변경
     public void Select_Layer(int layer_num)
     {
         switch (layer_num)
         {
             case 1:
-                select_layer = map.map_layer_1;
+                Matching_Tile_Sprite_Terrain();
                 break;
             case 2:
-                select_layer = map.map_layer_2;
+                Matching_Tile_Sprite_Biome();
                 break;
-            case 3:
-                select_layer = map.map_layer_3;
-                break;
-            case 4:
-                select_layer = map.map_layer_4;
-                break;
-        }
-        for (int i = 0; i < map.size_x * map.size_y; i++)
-        {
-            //  1레이어********************************************************************************************
-            Matching_Tile(select_layer, tile_layer_1, 0, null_tile);
-            Matching_Tile(select_layer, tile_layer_1, 1, ocean_tile);
-            Matching_Tile(select_layer, tile_layer_1, 2, plain_tile);
-            Matching_Tile(select_layer, tile_layer_1, 3, hill_tile);
-            Matching_Tile(select_layer, tile_layer_1, 4, mountain_tile);
-            //  2레이어********************************************************************************************
-            Matching_Tile(select_layer, tile_layer_1, 5, a_tile);
-            Matching_Tile(select_layer, tile_layer_1, 6, b_tile);
-            Matching_Tile(select_layer, tile_layer_1, 7, c_tile);
-            Matching_Tile(select_layer, tile_layer_1, 8, d_tile);
-            Matching_Tile(select_layer, tile_layer_1, 9, e_tile);
-            //  3레이어********************************************************************************************
-            Matching_Tile(select_layer, tile_layer_1, 10, river_T_tile);
-            Matching_Tile(select_layer, tile_layer_1, 11, river_V_1_tile);
-            Matching_Tile(select_layer, tile_layer_1, 12, river_V_2_tile);
-            Matching_Tile(select_layer, tile_layer_1, 13, river_V_3_tile);
-            Matching_Tile(select_layer, tile_layer_1, 14, river_I_1_tile);
-            Matching_Tile(select_layer, tile_layer_1, 15, river_I_2_tile);
-            Matching_Tile(select_layer, tile_layer_1, 16, river_I_3_tile);
-            //  로드 시 map의 정보와 보여지는 타일의 이미지를 일치시킴
-            void Matching_Tile(int[] map_layer, GameObject layer, int tile_type, Sprite tile_sprite)
-            {
-                if (map_layer[i] == tile_type)
-                {
-                    layer.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().sprite = tile_sprite;
-                }
-            }
         }
     }
     //  펜 기능
-    public void Tool_Pen(int[] map_layer, Sprite tile_sprite, int tile_type)
+    public void Tool_Pen(Tile[] map_layer, int tile_type)
     {
         if (is_tool_pen && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
         {
@@ -385,11 +360,9 @@ public class MapEdit : MonoBehaviour
                 {
                     string tile_num = hit.transform.gameObject.name;
                     tile_num = tile_num.Replace("Tile_", "");
-                    if (map_layer[int.Parse(tile_num)] != 0)
-                    {
-                        map_layer[int.Parse(tile_num)] = tile_type;
-                        hit.transform.gameObject.GetComponent<SpriteRenderer>().sprite = tile_sprite;
-                    }
+
+                    map_layer[int.Parse(tile_num)].terrain = tile_type;
+                    hit.transform.gameObject.GetComponent<SpriteRenderer>().sprite = select_tile_sprite;
                 }
             }
         }
@@ -403,6 +376,7 @@ public class MapEdit : MonoBehaviour
             is_tool_pen = false;
     }
     //  바이옴 적용하기
+    /*
     public void Apply_Biome()
     {
         for (int i = 0; i < map.size_x; i++)
@@ -441,5 +415,5 @@ public class MapEdit : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
 }
