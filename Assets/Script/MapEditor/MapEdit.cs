@@ -40,12 +40,12 @@ public class MapEdit : MonoBehaviour
     public Sprite hill_tile;                //  5번 언덕 타일
     public Sprite mountain_tile;            //  6번 산 타일
     //  바이옴
-    public Sprite tropical_tile;            //  0번 열대 타일
-    public Sprite dry_tile;                 //  1번 건조 타일
-    public Sprite desert_tile;              //  2번 사막 타일
-    public Sprite temperate_tile;           //  3번 온대 타일
-    public Sprite subarctic_tile;           //  4번 냉대 타일
-    public Sprite polar_tile;               //  5번 한대 타일
+    public Sprite tropical_tile;            //  1번 열대 타일
+    public Sprite dry_tile;                 //  2번 건조 타일
+    public Sprite desert_tile;              //  3번 사막 타일
+    public Sprite temperate_tile;           //  4번 온대 타일
+    public Sprite subarctic_tile;           //  5번 냉대 타일
+    public Sprite polar_tile;               //  6번 한대 타일
     //  자연환경
     public Sprite jungle_tile;              //  1번 정글 타일
     public Sprite forest_tile;              //  2번 숲 타일
@@ -59,7 +59,8 @@ public class MapEdit : MonoBehaviour
     public Sprite river_se_tile;            //  6번 남동
 
     public Sprite select_tile_sprite;
-    public Tile[] select_layer;
+    public Tile[] select_tile;
+    public int select_layer = 1;
     public int select_tile_type;
 
     public bool is_tool_pen = true;
@@ -72,7 +73,7 @@ public class MapEdit : MonoBehaviour
 
     void Update()
     {
-        Tool_Pen(select_layer, select_tile_type);
+        Tool_Pen(select_tile, select_tile_type);
     }
 
     //  새로운 맵 만들기(1레이어, 바다 타일로 초기화)******************************************************************
@@ -85,7 +86,7 @@ public class MapEdit : MonoBehaviour
         map.size_y = int.Parse(new_map_size_y.text);
         map.map_info = new Tile[map.size_x * map.size_y];
 
-        select_layer = map.map_info;
+        select_tile = map.map_info;
 
         //  바다 타일로 초기화
         for (int i = 0; i < map.size_x; i++)
@@ -138,7 +139,6 @@ public class MapEdit : MonoBehaviour
     {
         DataManager.GetComponent<MapData>().Load_File(file_name);
         map = DataManager.GetComponent<MapData>().map;
-        select_layer = map.map_info;
 
         //  필요한 수 만큼 타일 추가
         for (int i = 0; i < map.size_x * map.size_y; i++)
@@ -200,8 +200,11 @@ public class MapEdit : MonoBehaviour
                     tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = mountain_tile;
                     break;
             }
-            /*
             //  자연 환경 존재 시 배치(자연 환경은 평지 타일에만 배치됨)
+            if (map.map_info[i].terrain != 4)
+            {
+                map.map_info[i].nature = 0;
+            }
             switch (map.map_info[i].nature)
             {
                 case 1:
@@ -213,7 +216,8 @@ public class MapEdit : MonoBehaviour
                 case 3:
                     tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = marsh_tile;
                     break;
-            }*/
+            }
+
         }
     }
     //  바이옴 맵 이미지 매칭하기
@@ -223,7 +227,8 @@ public class MapEdit : MonoBehaviour
         {
             if(map.map_info[i].terrain > 3)
             {
-                map.map_info[i].biome = 4;
+                if(map.map_info[i].biome == 0)
+                    map.map_info[i].biome = 4;
             }
             else
             {
@@ -304,31 +309,31 @@ public class MapEdit : MonoBehaviour
         switch(tile_type)
         {
             case 0:
-                select_tile_sprite = ocean_tile;
+                //select_tile_sprite = ocean_tile;
                 select_tile_type = 0;
                 break;
             case 1:
-                select_tile_sprite = coast_tile;
+                //select_tile_sprite = coast_tile;
                 select_tile_type = 1;
                 break;
             case 2:
-                select_tile_sprite = lake_tile;
+                //select_tile_sprite = lake_tile;
                 select_tile_type = 2;
                 break;
             case 3:
-                select_tile_sprite = river_tile;
+                //select_tile_sprite = river_tile;
                 select_tile_type = 3;
                 break;
             case 4:
-                select_tile_sprite = flat_tile;
+                //select_tile_sprite = flat_tile;
                 select_tile_type = 4;
                 break;
             case 5:
-                select_tile_sprite = hill_tile;
+                //select_tile_sprite = hill_tile;
                 select_tile_type = 5;
                 break;
             case 6:
-                select_tile_sprite = mountain_tile;
+                //select_tile_sprite = mountain_tile;
                 select_tile_type = 6;
                 break;
         }
@@ -341,14 +346,21 @@ public class MapEdit : MonoBehaviour
         {
             case 1:
                 Matching_Tile_Sprite_Terrain();
+                select_layer = 1;
                 break;
             case 2:
                 Matching_Tile_Sprite_Biome();
+                select_layer = 2;
+                break;
+            case 3:
+                Matching_Tile_Sprite_Terrain();
+                select_layer = 3;
                 break;
         }
     }
+
     //  펜 기능
-    public void Tool_Pen(Tile[] map_layer, int tile_type)
+    public void Tool_Pen(Tile[] select_tile, int tile_type)
     {
         if (is_tool_pen && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
         {
@@ -361,8 +373,22 @@ public class MapEdit : MonoBehaviour
                     string tile_num = hit.transform.gameObject.name;
                     tile_num = tile_num.Replace("Tile_", "");
 
-                    map_layer[int.Parse(tile_num)].terrain = tile_type;
-                    hit.transform.gameObject.GetComponent<SpriteRenderer>().sprite = select_tile_sprite;
+                    switch (select_layer)
+                    {
+                        case 1:
+                            select_tile[int.Parse(tile_num)].terrain = tile_type;
+                            Matching_Tile_Sprite_Terrain();
+                            break;
+                        case 2:
+                            select_tile[int.Parse(tile_num)].biome = tile_type;
+                            Matching_Tile_Sprite_Biome();
+                            break;
+                        case 3:
+                            select_tile[int.Parse(tile_num)].nature = tile_type;
+                            Matching_Tile_Sprite_Terrain();
+                            break;
+                    }
+                    //hit.transform.gameObject.GetComponent<SpriteRenderer>().sprite = select_tile_sprite;
                 }
             }
         }
@@ -375,45 +401,4 @@ public class MapEdit : MonoBehaviour
         else
             is_tool_pen = false;
     }
-    //  바이옴 적용하기
-    /*
-    public void Apply_Biome()
-    {
-        for (int i = 0; i < map.size_x; i++)
-        {
-            for (int j = 0; j < map.size_y; j++)
-            {
-                int ten_latitude = map.size_y / 18;     //  위도10
-                int equator = map.size_y / 2;           //  적도
-
-                if (map.map_layer_1[j + i * map.size_y] != 1 && map.map_layer_2[j + i * map.size_y] == 0)
-                {
-                    if (j <= equator + ten_latitude && j >= equator - ten_latitude)
-                    {
-                        map.map_layer_2[j + i * map.size_y] = 5;
-                    }
-                    else if (j <= equator + ten_latitude * 3 && j >= equator - ten_latitude * 3)
-                    {
-                        map.map_layer_2[j + i * map.size_y] = 6;
-                    }
-                    else if (j <= equator + ten_latitude * 5 && j >= equator - ten_latitude * 5)
-                    {
-                        map.map_layer_2[j + i * map.size_y] = 7;
-                    }
-                    else if (j <= equator + ten_latitude * 7 && j >= equator - ten_latitude * 7)
-                    {
-                        map.map_layer_2[j + i * map.size_y] = 8;
-                    }
-                    else if (j <= equator + ten_latitude * 9 && j >= equator - ten_latitude * 9)
-                    {
-                        map.map_layer_2[j + i * map.size_y] = 9;
-                    }
-                    else
-                    {
-                        map.map_layer_2[j + i * map.size_y] = 9;
-                    }
-                }
-            }
-        }
-    }*/
 }
