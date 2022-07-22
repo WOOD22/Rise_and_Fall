@@ -59,7 +59,6 @@ public class MapEdit : MonoBehaviour
     public Sprite river_se_tile;            //  6번 남동
 
     public Sprite select_tile_sprite;
-    public Tile[] select_tile;
     public int select_layer = 1;
     public int select_tile_type;
 
@@ -73,7 +72,7 @@ public class MapEdit : MonoBehaviour
 
     void Update()
     {
-        Tool_Pen(select_tile, select_tile_type);
+        Tool_Pen(select_tile_type);
     }
 
     //  새로운 맵 만들기(1레이어, 바다 타일로 초기화)******************************************************************
@@ -85,8 +84,6 @@ public class MapEdit : MonoBehaviour
         map.size_x = int.Parse(new_map_size_x.text);
         map.size_y = int.Parse(new_map_size_y.text);
         map.map_info = new Tile[map.size_x * map.size_y];
-
-        select_tile = map.map_info;
 
         //  바다 타일로 초기화
         for (int i = 0; i < map.size_x; i++)
@@ -360,7 +357,7 @@ public class MapEdit : MonoBehaviour
     }
 
     //  펜 기능
-    public void Tool_Pen(Tile[] select_tile, int tile_type)
+    public void Tool_Pen(int tile_type)
     {
         if (is_tool_pen && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
         {
@@ -372,23 +369,23 @@ public class MapEdit : MonoBehaviour
                 {
                     string tile_num = hit.transform.gameObject.name;
                     tile_num = tile_num.Replace("Tile_", "");
-
+                    //
                     switch (select_layer)
                     {
                         case 1:
-                            select_tile[int.Parse(tile_num)].terrain = tile_type;
+                            Debug.Log(int.Parse(tile_num));
+                            map.map_info[int.Parse(tile_num)].terrain = tile_type;
                             Matching_Tile_Sprite_Terrain();
                             break;
                         case 2:
-                            select_tile[int.Parse(tile_num)].biome = tile_type;
+                            map.map_info[int.Parse(tile_num)].biome = tile_type;
                             Matching_Tile_Sprite_Biome();
                             break;
                         case 3:
-                            select_tile[int.Parse(tile_num)].nature = tile_type;
+                            map.map_info[int.Parse(tile_num)].nature = tile_type;
                             Matching_Tile_Sprite_Terrain();
                             break;
                     }
-                    //hit.transform.gameObject.GetComponent<SpriteRenderer>().sprite = select_tile_sprite;
                 }
             }
         }
