@@ -41,9 +41,8 @@ public class Map
 [Serializable]
 public class Tile
 {
-    public int terrain = 0;             //  지형           0 : 바다, 1 : 해안, 2 : 호수, 3 : 강, 4 : 평지, 5 : 언덕, 6 : 산
-    public int biome = 0;               //  바이옴         0 : 없음, 1 : 열대, 2 : 건조, 3 : 사막, 4 : 온대, 5 : 냉대, 6 : 한대
-    public int nature = 0;              //  자연 환경      0 : 없음, 1 : 정글, 2 : 숲, 3 : 습지
+    public int terrain = 0;             //  지형      0 : 바다, 1 : 해안, 2 : 호수, 3 : 강, 4 : 열대, 5 : 건조, 6 : 사막, 7 : 온대, 8 : 냉대, 8 : 한대
+    public int altitude = 0;            //  고도      0 : 없음, 1 : 언덕, 2 : 산
     public bool is_city;                //  도시 존재여부
     public City city                    //  도시
         = new City();

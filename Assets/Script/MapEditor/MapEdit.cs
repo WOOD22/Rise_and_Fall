@@ -200,9 +200,9 @@ public class MapEdit : MonoBehaviour
             //  자연 환경 존재 시 배치(자연 환경은 평지 타일에만 배치됨)
             if (map.map_info[i].terrain != 4)
             {
-                map.map_info[i].nature = 0;
+                map.map_info[i].altitude = 0;
             }
-            switch (map.map_info[i].nature)
+            switch (map.map_info[i].altitude)
             {
                 case 1:
                     tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = jungle_tile;
@@ -215,46 +215,6 @@ public class MapEdit : MonoBehaviour
                     break;
             }
 
-        }
-    }
-    //  바이옴 맵 이미지 매칭하기
-    void Matching_Tile_Sprite_Biome()
-    {
-        for (int i = 0; i < map.size_x * map.size_y; i++)
-        {
-            if(map.map_info[i].terrain > 3)
-            {
-                if(map.map_info[i].biome == 0)
-                    map.map_info[i].biome = 4;
-            }
-            else
-            {
-                tile_map.transform.GetChild(i).gameObject.SetActive(false);
-            }
-        }
-        for (int i = 0; i < map.size_x * map.size_y; i++)
-        {
-            switch (map.map_info[i].biome)
-            {
-                case 1:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = tropical_tile;
-                    break;
-                case 2:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = dry_tile;
-                    break;
-                case 3:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = desert_tile;
-                    break;
-                case 4:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = temperate_tile;
-                    break;
-                case 5:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = subarctic_tile;
-                    break;
-                case 6:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = polar_tile;
-                    break;
-            }
         }
     }
 
@@ -346,12 +306,8 @@ public class MapEdit : MonoBehaviour
                 select_layer = 1;
                 break;
             case 2:
-                Matching_Tile_Sprite_Biome();
-                select_layer = 2;
-                break;
-            case 3:
                 Matching_Tile_Sprite_Terrain();
-                select_layer = 3;
+                select_layer = 2;
                 break;
         }
     }
@@ -378,11 +334,7 @@ public class MapEdit : MonoBehaviour
                             Matching_Tile_Sprite_Terrain();
                             break;
                         case 2:
-                            map.map_info[int.Parse(tile_num)].biome = tile_type;
-                            Matching_Tile_Sprite_Biome();
-                            break;
-                        case 3:
-                            map.map_info[int.Parse(tile_num)].nature = tile_type;
+                            map.map_info[int.Parse(tile_num)].altitude = tile_type;
                             Matching_Tile_Sprite_Terrain();
                             break;
                     }
