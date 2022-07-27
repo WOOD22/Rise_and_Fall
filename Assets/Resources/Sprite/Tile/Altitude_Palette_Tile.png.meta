@@ -1,28 +1,16 @@
 fileFormatVersion: 2
-guid: 3a8802a60608e50458aab29aef836815
+guid: 186db5f69f20ff94489a28ce7feb3fa0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3255654926741583601
-    second: River_Tile_0
+      213: -5194254185006007578
+    second: Altitude_Palette_Tile_0
   - first:
-      213: -8702705679432204969
-    second: River_Tile_1
+      213: 2782577680307650485
+    second: Altitude_Palette_Tile_1
   - first:
-      213: 5680780550207714166
-    second: River_Tile_2
-  - first:
-      213: -5420874160723843961
-    second: River_Tile_3
-  - first:
-      213: 4407580109638162488
-    second: River_Tile_4
-  - first:
-      213: -2426515494499663537
-    second: River_Tile_5
-  - first:
-      213: 3558754878063281828
-    second: River_Tile_6
+      213: 7963216590703806892
+    second: Altitude_Palette_Tile_2
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -136,7 +124,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: River_Tile_0
+      name: Altitude_Palette_Tile_0
       rect:
         serializedVersion: 2
         x: 0
@@ -150,14 +138,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1f6beab18e86e2d20800000000000000
-      internalID: 3255654926741583601
+      spriteID: 6ea71adc65d4ae7b0800000000000000
+      internalID: -5194254185006007578
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: River_Tile_1
+      name: Altitude_Palette_Tile_1
       rect:
         serializedVersion: 2
         x: 32
@@ -171,14 +159,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 75d3ba02b47c93780800000000000000
-      internalID: -8702705679432204969
+      spriteID: 5bffaa258a3bd9620800000000000000
+      internalID: 2782577680307650485
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: River_Tile_2
+      name: Altitude_Palette_Tile_2
       rect:
         serializedVersion: 2
         x: 64
@@ -192,92 +180,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6733416ffcf26de40800000000000000
-      internalID: 5680780550207714166
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: River_Tile_3
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 78426fdfbaf25c4b0800000000000000
-      internalID: -5420874160723843961
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: River_Tile_4
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8385f02e1ceda2d30800000000000000
-      internalID: 4407580109638162488
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: River_Tile_5
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f41cd549309435ed0800000000000000
-      internalID: -2426515494499663537
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: River_Tile_6
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4a686add4bc336130800000000000000
-      internalID: 3558754878063281828
+      spriteID: ca9c56e5c47038e60800000000000000
+      internalID: 7963216590703806892
       vertices: []
       indices: 
       edges: []

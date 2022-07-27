@@ -1,28 +1,43 @@
 fileFormatVersion: 2
-guid: b5bd2bfd1699f85409b719a025678ba9
+guid: 05924eb5938841042bb748eed74fba8c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7929186273279262076
-    second: River_Palette_Tile_0
+      213: -8195711068882266160
+    second: Altitude_Tile_0
   - first:
-      213: -573737396729673122
-    second: River_Palette_Tile_1
+      213: -8631726800727937507
+    second: Altitude_Tile_1
   - first:
-      213: -583937388601997749
-    second: River_Palette_Tile_2
+      213: 9070283539444128297
+    second: Altitude_Tile_2
   - first:
-      213: -3866267399035732662
-    second: River_Palette_Tile_3
+      213: -1819049431238146509
+    second: Altitude_Tile_3
   - first:
-      213: 6656286895578555304
-    second: River_Palette_Tile_4
+      213: -4238490377792703004
+    second: Altitude_Tile_4
   - first:
-      213: -2798749525448357116
-    second: River_Palette_Tile_5
+      213: 8736316981107696102
+    second: Altitude_Tile_5
   - first:
-      213: -4970239300755734359
-    second: River_Palette_Tile_6
+      213: 9207282090256829691
+    second: Altitude_Tile_6
+  - first:
+      213: 2939537867985039836
+    second: Altitude_Tile_7
+  - first:
+      213: 6745467614228529240
+    second: Altitude_Tile_8
+  - first:
+      213: -749699736249805408
+    second: Altitude_Tile_9
+  - first:
+      213: 3074613964865687730
+    second: Altitude_Tile_10
+  - first:
+      213: 7720440180995597598
+    second: Altitude_Tile_11
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -136,7 +151,133 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: River_Palette_Tile_0
+      name: Altitude_Tile_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d71981a43cf24e80800000000000000
+      internalID: -8195711068882266160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Altitude_Tile_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1e64642532f53880800000000000000
+      internalID: -8631726800727937507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Altitude_Tile_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92ad3ac92de10ed70800000000000000
+      internalID: 9070283539444128297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Altitude_Tile_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3368c261e2071c6e0800000000000000
+      internalID: -1819049431238146509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Altitude_Tile_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e531c7357bdd25c0800000000000000
+      internalID: -4238490377792703004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Altitude_Tile_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e12320e102ad3970800000000000000
+      internalID: 8736316981107696102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Altitude_Tile_6
       rect:
         serializedVersion: 2
         x: 0
@@ -150,14 +291,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c7db6b8a7e02a0e60800000000000000
-      internalID: 7929186273279262076
+      spriteID: bfc03906746d6cf70800000000000000
+      internalID: 9207282090256829691
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: River_Palette_Tile_1
+      name: Altitude_Tile_7
       rect:
         serializedVersion: 2
         x: 32
@@ -171,14 +312,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e5a0291a0eca908f0800000000000000
-      internalID: -573737396729673122
+      spriteID: cd1be09dd165bc820800000000000000
+      internalID: 2939537867985039836
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: River_Palette_Tile_2
+      name: Altitude_Tile_8
       rect:
         serializedVersion: 2
         x: 64
@@ -192,14 +333,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b460f45f90075e7f0800000000000000
-      internalID: -583937388601997749
+      spriteID: 8504efd5e07bc9d50800000000000000
+      internalID: 6745467614228529240
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: River_Palette_Tile_3
+      name: Altitude_Tile_9
       rect:
         serializedVersion: 2
         x: 96
@@ -213,14 +354,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a4d3dc1f842485ac0800000000000000
-      internalID: -3866267399035732662
+      spriteID: 0a550acdf088895f0800000000000000
+      internalID: -749699736249805408
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: River_Palette_Tile_4
+      name: Altitude_Tile_10
       rect:
         serializedVersion: 2
         x: 128
@@ -234,14 +375,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8a32c0e3aa1ef5c50800000000000000
-      internalID: 6656286895578555304
+      spriteID: 2b0564d6c193baa20800000000000000
+      internalID: 3074613964865687730
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: River_Palette_Tile_5
+      name: Altitude_Tile_11
       rect:
         serializedVersion: 2
         x: 160
@@ -255,29 +396,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 40b8b509228d829d0800000000000000
-      internalID: -2798749525448357116
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: River_Palette_Tile_6
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9a0c4cd70b9260bb0800000000000000
-      internalID: -4970239300755734359
+      spriteID: e1525e1a073842b60800000000000000
+      internalID: 7720440180995597598
       vertices: []
       indices: 
       edges: []

@@ -36,27 +36,15 @@ public class MapEdit : MonoBehaviour
     public Sprite coast_tile;               //  1번 해안 타일
     public Sprite lake_tile;                //  2번 호수 타일
     public Sprite river_tile;               //  3번 큰강 타일
-    public Sprite flat_tile;                //  4번 평지 타일
-    public Sprite hill_tile;                //  5번 언덕 타일
-    public Sprite mountain_tile;            //  6번 산 타일
-    //  바이옴
-    public Sprite tropical_tile;            //  1번 열대 타일
-    public Sprite dry_tile;                 //  2번 건조 타일
-    public Sprite desert_tile;              //  3번 사막 타일
-    public Sprite temperate_tile;           //  4번 온대 타일
-    public Sprite subarctic_tile;           //  5번 냉대 타일
-    public Sprite polar_tile;               //  6번 한대 타일
-    //  자연환경
-    public Sprite jungle_tile;              //  1번 정글 타일
-    public Sprite forest_tile;              //  2번 숲 타일
-    public Sprite marsh_tile;               //  3번 습지 타일
-    //  작은 강
-    public Sprite river_e_tile;             //  1번 동
-    public Sprite river_ne_tile;            //  2번 북동
-    public Sprite river_nw_tile;            //  3번 북서
-    public Sprite river_w_tile;             //  4번 서
-    public Sprite river_sw_tile;            //  5번 남서
-    public Sprite river_se_tile;            //  6번 남동
+    public Sprite tropical_tile;            //  4번 열대 타일
+    public Sprite dry_tile;                 //  5번 건조 타일
+    public Sprite desert_tile;              //  6번 사막 타일
+    public Sprite temperate_tile;           //  7번 온대 타일
+    public Sprite subarctic_tile;           //  8번 냉대 타일
+    public Sprite polar_tile;               //  9번 한대 타일
+    //  고저
+    public Sprite[] hill_tile;                //  5번 언덕 타일
+    public Sprite[] mountain_tile;            //  6번 산 타일
 
     public Sprite select_tile_sprite;
     public int select_layer = 1;
@@ -188,33 +176,78 @@ public class MapEdit : MonoBehaviour
                     tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = river_tile;
                     break;
                 case 4:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = flat_tile;
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = tropical_tile;
                     break;
                 case 5:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = hill_tile;
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = dry_tile;
                     break;
                 case 6:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = mountain_tile;
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = desert_tile;
+                    break;
+                case 7:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = temperate_tile;
+                    break;
+                case 8:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = subarctic_tile;
+                    break;
+                case 9:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = polar_tile;
                     break;
             }
-            //  자연 환경 존재 시 배치(자연 환경은 평지 타일에만 배치됨)
-            if (map.map_info[i].terrain != 4)
+            //  땅 존재 시 배치(고저 타일은 땅 타일에만 배치됨)
+            if (map.map_info[i].terrain < 4)
             {
                 map.map_info[i].altitude = 0;
             }
             switch (map.map_info[i].altitude)
             {
                 case 1:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = jungle_tile;
+                    switch(map.map_info[i].terrain)
+                    {
+                        case 4:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = hill_tile[0];
+                            break;
+                        case 5:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = hill_tile[1];
+                            break;
+                        case 6:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = hill_tile[2];
+                            break;
+                        case 7:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = hill_tile[3];
+                            break;
+                        case 8:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = hill_tile[4];
+                            break;
+                        case 9:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = hill_tile[5];
+                            break;
+                    }
                     break;
                 case 2:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = forest_tile;
-                    break;
-                case 3:
-                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = marsh_tile;
+                    switch (map.map_info[i].terrain)
+                    {
+                        case 4:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = mountain_tile[0];
+                            break;
+                        case 5:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = mountain_tile[1];
+                            break;
+                        case 6:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = mountain_tile[2];
+                            break;
+                        case 7:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = mountain_tile[3];
+                            break;
+                        case 8:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = mountain_tile[4];
+                            break;
+                        case 9:
+                            tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = mountain_tile[5];
+                            break;
+                    }
                     break;
             }
-
         }
     }
 
@@ -266,32 +299,34 @@ public class MapEdit : MonoBehaviour
         switch(tile_type)
         {
             case 0:
-                //select_tile_sprite = ocean_tile;
                 select_tile_type = 0;
                 break;
             case 1:
-                //select_tile_sprite = coast_tile;
                 select_tile_type = 1;
                 break;
             case 2:
-                //select_tile_sprite = lake_tile;
                 select_tile_type = 2;
                 break;
             case 3:
-                //select_tile_sprite = river_tile;
                 select_tile_type = 3;
                 break;
             case 4:
-                //select_tile_sprite = flat_tile;
                 select_tile_type = 4;
                 break;
             case 5:
-                //select_tile_sprite = hill_tile;
                 select_tile_type = 5;
                 break;
             case 6:
-                //select_tile_sprite = mountain_tile;
                 select_tile_type = 6;
+                break;
+            case 7:
+                select_tile_type = 7;
+                break;
+            case 8:
+                select_tile_type = 8;
+                break;
+            case 9:
+                select_tile_type = 9;
                 break;
         }
     }
@@ -329,8 +364,41 @@ public class MapEdit : MonoBehaviour
                     switch (select_layer)
                     {
                         case 1:
-                            Debug.Log(int.Parse(tile_num));
                             map.map_info[int.Parse(tile_num)].terrain = tile_type;
+                            //  육지타일 배치 시 주변 타일 해안 타일로 바꿈
+                            if (tile_type >= 4) 
+                            {
+                                if (int.Parse(tile_num) + 1 < map.size_x * map.size_y && int.Parse(tile_num) % map.size_y != map.size_y - 1)
+                                {
+                                    if (map.map_info[int.Parse(tile_num) + 1].terrain == 0)
+                                        map.map_info[int.Parse(tile_num) + 1].terrain = 1;
+                                }
+                                if (int.Parse(tile_num) - 1 >= 0 && int.Parse(tile_num) % map.size_y != 0)
+                                {
+                                    if (map.map_info[int.Parse(tile_num) - 1].terrain == 0)
+                                        map.map_info[int.Parse(tile_num) - 1].terrain = 1;
+                                }
+                                if (int.Parse(tile_num) + map.size_y < map.size_x * map.size_y)
+                                {
+                                    if (map.map_info[int.Parse(tile_num) + map.size_y].terrain == 0)
+                                        map.map_info[int.Parse(tile_num) + map.size_y].terrain = 1;
+                                }
+                                if (int.Parse(tile_num) - map.size_y >= 0)
+                                {
+                                    if (map.map_info[int.Parse(tile_num) - map.size_y].terrain == 0)
+                                        map.map_info[int.Parse(tile_num) - map.size_y].terrain = 1;
+                                }
+                                if (int.Parse(tile_num) - map.size_y + 1 >= 0)
+                                {
+                                    if (map.map_info[int.Parse(tile_num) - map.size_y + 1].terrain == 0 && int.Parse(tile_num) % map.size_y != map.size_y - 1)
+                                        map.map_info[int.Parse(tile_num) - map.size_y + 1].terrain = 1;
+                                }
+                                if (int.Parse(tile_num) + map.size_y - 1 < map.size_x * map.size_y && int.Parse(tile_num) % map.size_y != 0)
+                                {
+                                    if (map.map_info[int.Parse(tile_num) + map.size_y - 1].terrain == 0)
+                                        map.map_info[int.Parse(tile_num) + map.size_y - 1].terrain = 1;
+                                }
+                            }
                             Matching_Tile_Sprite_Terrain();
                             break;
                         case 2:
@@ -343,9 +411,9 @@ public class MapEdit : MonoBehaviour
         }
     }
     //  펜 활성화
-    public void Tool_Use_Pen()
+    public void Tool_Use_Pen(bool on_off)
     {
-        if (!is_tool_pen)
+        if (on_off)
             is_tool_pen = true;
         else
             is_tool_pen = false;
