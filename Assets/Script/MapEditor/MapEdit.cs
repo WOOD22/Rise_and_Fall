@@ -52,6 +52,8 @@ public class MapEdit : MonoBehaviour
 
     public bool is_tool_pen = true;
 
+    public LayerMask layerMask;
+
     void Start()
     {
         select_tile_sprite = null_tile;
@@ -339,10 +341,17 @@ public class MapEdit : MonoBehaviour
             case 1:
                 Matching_Tile_Sprite_Terrain();
                 select_layer = 1;
+                layerMask = 1 << LayerMask.NameToLayer("Tile");
                 break;
             case 2:
                 Matching_Tile_Sprite_Terrain();
                 select_layer = 2;
+                layerMask = 1 << LayerMask.NameToLayer("Tile");
+                break;
+            case 3:
+                Matching_Tile_Sprite_Terrain();
+                select_layer = 3;
+                layerMask = 1 << LayerMask.NameToLayer("River");
                 break;
         }
     }
@@ -353,10 +362,10 @@ public class MapEdit : MonoBehaviour
         if (is_tool_pen && Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             Vector3 mouse_position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(mouse_position, transform.forward, 15);
+            RaycastHit2D hit = Physics2D.Raycast(mouse_position, transform.forward, 15, layerMask);
             if (hit)
             {
-                if(hit.transform.gameObject.name.Contains("Tile"))
+                if (hit.transform.gameObject.name.Contains("Tile"))
                 {
                     string tile_num = hit.transform.gameObject.name;
                     tile_num = tile_num.Replace("Tile_", "");
@@ -400,10 +409,67 @@ public class MapEdit : MonoBehaviour
                                 }
                             }
                             Matching_Tile_Sprite_Terrain();
+
+                            Vector2 vec = hit.transform.localPosition;
+                            if (hit.point.x - vec.x > 0 && hit.point.y - vec.y > + (hit.point.x - vec.x) / 2)
+                            {
+                                Debug.Log("북동");
+                            }
+                            else if (hit.point.x - vec.x > 0 && hit.point.y - vec.y < - (hit.point.x - vec.x) / 2)
+                            {
+                                Debug.Log("남동");
+                            }
+                            else if (hit.point.x - vec.x > 0)
+                            {
+                                Debug.Log("동");
+                            }
+
+                            if (hit.point.x - vec.x < 0 && hit.point.y - vec.y > - (hit.point.x - vec.x) / 2)
+                            {
+                                Debug.Log("북서");
+                            }
+                            else if (hit.point.x - vec.x < 0 && hit.point.y - vec.y < + (hit.point.x - vec.x) / 2)
+                            {
+                                Debug.Log("남서");
+                            }
+                            else if (hit.point.x - vec.x < 0)
+                            {
+                                Debug.Log("서");
+                            }
+                            //Debug.Log((hit.point.x - vec.x) + ", " + (hit.point.y - vec.y));     
                             break;
                         case 2:
                             map.map_info[int.Parse(tile_num)].altitude = tile_type;
                             Matching_Tile_Sprite_Terrain();
+                            break;
+                        case 3:
+                            /*
+                           Vector2 vec = hit.transform.localPosition;
+                            if (hit.point.x - vec.x > 0 && hit.point.y - vec.y > + (hit.point.x - vec.x) / 2)
+                            {
+                                Debug.Log("북동");
+                            }
+                            else if (hit.point.x - vec.x > 0 && hit.point.y - vec.y < - (hit.point.x - vec.x) / 2)
+                            {
+                                Debug.Log("남동");
+                            }
+                            else if (hit.point.x - vec.x > 0)
+                            {
+                                Debug.Log("동");
+                            }
+
+                            if (hit.point.x - vec.x < 0 && hit.point.y - vec.y > - (hit.point.x - vec.x) / 2)
+                            {
+                                Debug.Log("북서");
+                            }
+                            else if (hit.point.x - vec.x < 0 && hit.point.y - vec.y < + (hit.point.x - vec.x) / 2)
+                            {
+                                Debug.Log("남서");
+                            }
+                            else if (hit.point.x - vec.x < 0)
+                            {
+                                Debug.Log("서");
+                            }*/
                             break;
                     }
                 }
