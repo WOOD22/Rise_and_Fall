@@ -43,8 +43,8 @@ public class MapEdit : MonoBehaviour
     public Sprite subarctic_tile;           //  8번 냉대 타일
     public Sprite polar_tile;               //  9번 한대 타일
     //  고저
-    public Sprite[] hill_tile;                //  5번 언덕 타일
-    public Sprite[] mountain_tile;            //  6번 산 타일
+    public Sprite[] hill_tile;                //  1번 언덕 타일
+    public Sprite[] mountain_tile;            //  2번 산 타일
 
     public Sprite select_tile_sprite;
     public int select_layer = 1;
@@ -248,6 +248,7 @@ public class MapEdit : MonoBehaviour
                     }
                     break;
             }
+            //  강타일 배치
             if (map.map_info[i].terrain >= 4)
             {
                 if (map.map_info[i].river[0] == 1)
@@ -280,6 +281,41 @@ public class MapEdit : MonoBehaviour
                 for (int j = 0; j < 6; j++)
                 {
                     map.map_info[i].river[j] = 0;
+                }
+            }
+            //  도로타일 배치
+            if (map.map_info[i].terrain >= 4)
+            {
+                if (map.map_info[i].road[0] == 1)
+                    tile_map.transform.GetChild(i).GetChild(6).gameObject.SetActive(true);
+                else
+                    tile_map.transform.GetChild(i).GetChild(6).gameObject.SetActive(false);
+                if (map.map_info[i].road[1] == 1)
+                    tile_map.transform.GetChild(i).GetChild(7).gameObject.SetActive(true);
+                else
+                    tile_map.transform.GetChild(i).GetChild(7).gameObject.SetActive(false);
+                if (map.map_info[i].road[2] == 1)
+                    tile_map.transform.GetChild(i).GetChild(8).gameObject.SetActive(true);
+                else
+                    tile_map.transform.GetChild(i).GetChild(8).gameObject.SetActive(false);
+                if (map.map_info[i].road[3] == 1)
+                    tile_map.transform.GetChild(i).GetChild(9).gameObject.SetActive(true);
+                else
+                    tile_map.transform.GetChild(i).GetChild(9).gameObject.SetActive(false);
+                if (map.map_info[i].road[4] == 1)
+                    tile_map.transform.GetChild(i).GetChild(10).gameObject.SetActive(true);
+                else
+                    tile_map.transform.GetChild(i).GetChild(10).gameObject.SetActive(false);
+                if (map.map_info[i].road[5] == 1)
+                    tile_map.transform.GetChild(i).GetChild(11).gameObject.SetActive(true);
+                else
+                    tile_map.transform.GetChild(i).GetChild(11).gameObject.SetActive(false);
+            }
+            if (map.map_info[i].altitude != 0)
+            {
+                for (int j = 0; j < 6; j++)
+                {
+                    map.map_info[i].road[j] = 0;
                 }
             }
         }
@@ -382,6 +418,10 @@ public class MapEdit : MonoBehaviour
                 Matching_Tile_Sprite_Terrain();
                 select_layer = 3;
                 break;
+            case 4:
+                Matching_Tile_Sprite_Terrain();
+                select_layer = 4;
+                break;
         }
     }
 
@@ -392,6 +432,7 @@ public class MapEdit : MonoBehaviour
         {
             Vector3 mouse_position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mouse_position, transform.forward, 15);
+            Vector2 vec;
             if (hit)
             {
                 if (hit.transform.gameObject.name.Contains("Tile"))
@@ -444,39 +485,65 @@ public class MapEdit : MonoBehaviour
                             Matching_Tile_Sprite_Terrain();
                             break;
                         case 3:
-                            Vector2 vec = hit.transform.localPosition;
+                            vec = hit.transform.localPosition;
                             if (map.map_info[int.Parse(tile_num)].altitude == 0 && map.map_info[int.Parse(tile_num)].terrain >= 4)
                             {
                                 if (hit.point.x - vec.x > 0 && hit.point.y - vec.y > +(hit.point.x - vec.x) / 2)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[0] = tile_type;
-                                    Debug.Log("북동");
                                 }
                                 else if (hit.point.x - vec.x > 0 && hit.point.y - vec.y < -(hit.point.x - vec.x) / 2)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[2] = tile_type;
-                                    Debug.Log("남동");
                                 }
                                 else if (hit.point.x - vec.x > 0)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[1] = tile_type;
-                                    Debug.Log("동");
                                 }
 
                                 if (hit.point.x - vec.x < 0 && hit.point.y - vec.y > -(hit.point.x - vec.x) / 2)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[5] = tile_type;
-                                    Debug.Log("북서");
                                 }
                                 else if (hit.point.x - vec.x < 0 && hit.point.y - vec.y < +(hit.point.x - vec.x) / 2)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[3] = tile_type;
-                                    Debug.Log("남서");
                                 }
                                 else if (hit.point.x - vec.x < 0)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[4] = tile_type;
-                                    Debug.Log("서");
+                                }
+                            }
+                            Matching_Tile_Sprite_Terrain();
+                            break;
+                        case 4:
+                            vec = hit.transform.localPosition;
+                            if (map.map_info[int.Parse(tile_num)].terrain >= 4)
+                            {
+                                if (hit.point.x - vec.x > 0 && hit.point.y - vec.y > +(hit.point.x - vec.x) / 2)
+                                {
+                                    map.map_info[int.Parse(tile_num)].road[0] = tile_type;
+                                }
+                                else if (hit.point.x - vec.x > 0 && hit.point.y - vec.y < -(hit.point.x - vec.x) / 2)
+                                {
+                                    map.map_info[int.Parse(tile_num)].road[2] = tile_type;
+                                }
+                                else if (hit.point.x - vec.x > 0)
+                                {
+                                    map.map_info[int.Parse(tile_num)].road[1] = tile_type;
+                                }
+
+                                if (hit.point.x - vec.x < 0 && hit.point.y - vec.y > -(hit.point.x - vec.x) / 2)
+                                {
+                                    map.map_info[int.Parse(tile_num)].road[5] = tile_type;
+                                }
+                                else if (hit.point.x - vec.x < 0 && hit.point.y - vec.y < +(hit.point.x - vec.x) / 2)
+                                {
+                                    map.map_info[int.Parse(tile_num)].road[3] = tile_type;
+                                }
+                                else if (hit.point.x - vec.x < 0)
+                                {
+                                    map.map_info[int.Parse(tile_num)].road[4] = tile_type;
                                 }
                             }
                             Matching_Tile_Sprite_Terrain();

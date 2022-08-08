@@ -44,6 +44,7 @@ public class Tile
     public int terrain = 0;             //  지형      0 : 바다, 1 : 해안, 2 : 호수, 3 : 강, 4 : 열대, 5 : 건조, 6 : 사막, 7 : 온대, 8 : 냉대, 8 : 한대
     public int altitude = 0;            //  고도      0 : 없음, 1 : 언덕, 2 : 산
     public int[] river = new int[6];    //  강
+    public int[] road = new int[6];   //  도로
     public Tile_Resource resource       //  타일의 자원
     = new Tile_Resource();
     public Tile_Property property       //  타일의 속성
