@@ -44,37 +44,27 @@ public class Tile
     public int terrain = 0;             //  지형      0 : 바다, 1 : 해안, 2 : 호수, 3 : 강, 4 : 열대, 5 : 건조, 6 : 사막, 7 : 온대, 8 : 냉대, 8 : 한대
     public int altitude = 0;            //  고도      0 : 없음, 1 : 언덕, 2 : 산
     public int[] river = new int[6];    //  강
-    public int[] road = new int[6];   //  도로
-    public Tile_Resource resource       //  타일의 자원
-    = new Tile_Resource();
+    public bool is_river;
+    public int[] road = new int[6];     //  도로
+    public bool is_road;
     public Tile_Property property       //  타일의 속성
         = new Tile_Property();
 }
 [Serializable]
-public class Tile_Resource
-{
-    public float tile_soil;             //  비옥도, 농업 생산량+
-    public float tile_water;            //  강수량 & 저수지 등에 비축된 물이 포함된 수량, 인구 캡+, 농업 생산량+
-    public float tile_tree;             //  수목량, 수량+, 인구 캡+
-    public float tile_stone;            //  석재량
-    public float tile_coal;             //  석탄 매장량
-    public float tile_copper;           //  구리 매장량
-    public float tile_iron;             //  철 매장량
-    public float tile_silver;           //  은 매장량
-    public float tile_gold;             //  금 매장량
-    public float tile_jewelry;          //  보석 매장량
-    public float tile_elohium;          //  엘로히움 매장량(엘로힘의 파편, 신적인 힘을 가진 금속, 가공자의 의지에 따라 가공품의 효과가 다르다.)
-}
-[Serializable]
 public class Tile_Property
 {
-    public string name;                 //  타일 이름(인구 100 이상의 마을 부터 이름 생성)
+    public string name;                 //  타일 이름(인구 100 이상부터 이름 생성)
     public string owner_code;           //  타일 소유세력 코드
     public string ruler_code;           //  타일 통치자 코드
-    public List<Pop> population         //  인구(계급, 문화별로 분류), 계급은 상류층, 중류층, 하류층으로 나뉜다.
-        = new List<Pop>();
-    public Development development      //  개발도
-        = new Development();
+    public List<Pop> population
+        = new List<Pop>();              //  인구 리스트(계급, 문화별로 분류), 계급은 상류층, 중류층, 하류층으로 나뉜다.
+    /*public Development development
+        = new Development();            //  개발도*/
+    public List<Tile_Resource> tile_resource
+         = new List<Tile_Resource>();   //  자원 리스트
+    public List<Tile_Production> tile_production
+         = new List<Tile_Production>(); //  생산 리스트
+    public int tile_soil_fertility;     //  토지비옥도 (0 : 매우 나쁨, 1 : 나쁨, 2 : 조금 나쁨, 3 : 보통, 4 : 조금 좋음, 5 : 좋음, 6 : 매우 좋음)
 }
 [Serializable]
 public class Pop
@@ -83,6 +73,8 @@ public class Pop
     public string class_code;           //  계급 코드
     public int pop_cap;                 //  인구 한계치
     public int pop_num;                 //  인구 수
+    public int pop_employed;            //  노동 인구
+    public int pop_unemployed;          //  실업 인구
 }
 [Serializable]
 public class Development
@@ -95,8 +87,11 @@ public class Development
     public float tertiary_industry_cap; //  상한
 }
 [Serializable]
-public class Production
+public class Tile_Production
 {
+    public string tile_production_code; //  생산 코드
+    public float tile_production_amount;//  생산량
+    /*
     //  1차 산업
     public float grain;                 //  곡물
     public float fish;                  //  생선
@@ -126,4 +121,22 @@ public class Production
     public float art;                   //  예술
     public float science;               //  과학
     public float humanity;              //  인문학
+    */
+}
+[Serializable]
+public class Tile_Resource
+{
+    public string tile_resource_code;   //  자원 코드
+    public float tile_resource_amount;  //  자원량
+    /*
+    public float tile_tree;             //  수목량, 수량+, 인구 캡+
+    public float tile_stone;            //  석재량
+    public float tile_coal;             //  석탄 매장량
+    public float tile_copper;           //  구리 매장량
+    public float tile_iron;             //  철 매장량
+    public float tile_silver;           //  은 매장량
+    public float tile_gold;             //  금 매장량
+    public float tile_jewelry;          //  보석 매장량
+    public float tile_elohium;          //  엘로히움 매장량(엘로힘의 파편, 신적인 힘을 가진 금속, 가공자의 의지에 따라 가공품의 효과가 다르다.)
+    */
 }

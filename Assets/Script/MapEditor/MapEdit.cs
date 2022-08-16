@@ -432,7 +432,11 @@ public class MapEdit : MonoBehaviour
         {
             Vector3 mouse_position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mouse_position, transform.forward, 15);
-            Vector2 vec;
+            Vector2 vec = new Vector2();
+            //  case 3,4 충동제외
+            float a = 0;        //  Mathf.Abs(hit.point.x - vec.x)
+            float b = 0;        //  Mathf.Abs(hit.point.y - vec.y)
+            float c = 0.1f;     //  충돌 제외 크기
             if (hit)
             {
                 if (hit.transform.gameObject.name.Contains("Tile"))
@@ -486,62 +490,97 @@ public class MapEdit : MonoBehaviour
                             break;
                         case 3:
                             vec = hit.transform.localPosition;
+                            a = Mathf.Abs(hit.point.x - vec.x);
+                            b = Mathf.Abs(hit.point.y - vec.y);
+                            //  가장자리에서 6방향으로 레이 충돌
                             if (map.map_info[int.Parse(tile_num)].altitude == 0 && map.map_info[int.Parse(tile_num)].terrain >= 4)
                             {
-                                if (hit.point.x - vec.x > 0 && hit.point.y - vec.y > +(hit.point.x - vec.x) / 2)
+                                //  북서
+                                if (hit.point.x - vec.x > 0 && hit.point.y - vec.y > +(hit.point.x - vec.x) / 2 && a > c && b > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[0] = tile_type;
+                                    if(int.Parse(tile_num) + 1 < map.size_x * map.size_y && int.Parse(tile_num) % map.size_y != map.size_y - 1)
+                                    {
+                                        map.map_info[int.Parse(tile_num) + 1].river[3] = tile_type;
+                                    }
                                 }
-                                else if (hit.point.x - vec.x > 0 && hit.point.y - vec.y < -(hit.point.x - vec.x) / 2)
+                                //  남서
+                                else if (hit.point.x - vec.x > 0 && hit.point.y - vec.y < -(hit.point.x - vec.x) / 2 && a > c && b > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[2] = tile_type;
+                                    if (int.Parse(tile_num) + map.size_y - 1 < map.size_x * map.size_y && int.Parse(tile_num) % map.size_y != 0)
+                                    {
+                                        map.map_info[int.Parse(tile_num) + map.size_y - 1].river[5] = tile_type;
+                                    }
                                 }
-                                else if (hit.point.x - vec.x > 0)
+                                //  서
+                                else if (hit.point.x - vec.x > 0 && a > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[1] = tile_type;
+                                    if (int.Parse(tile_num) + map.size_y < map.size_x * map.size_y)
+                                    {
+                                        map.map_info[int.Parse(tile_num) + map.size_y].river[4] = tile_type;
+                                    }
                                 }
 
-                                if (hit.point.x - vec.x < 0 && hit.point.y - vec.y > -(hit.point.x - vec.x) / 2)
+                                //  북동
+                                if (hit.point.x - vec.x < 0 && hit.point.y - vec.y > -(hit.point.x - vec.x) / 2 && a > c && b > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[5] = tile_type;
+                                    if (int.Parse(tile_num) - map.size_y + 1 >= 0)
+                                    {
+                                        map.map_info[int.Parse(tile_num) - map.size_y + 1].river[2] = tile_type;
+                                    }
                                 }
-                                else if (hit.point.x - vec.x < 0 && hit.point.y - vec.y < +(hit.point.x - vec.x) / 2)
+                                //  남동
+                                else if (hit.point.x - vec.x < 0 && hit.point.y - vec.y < +(hit.point.x - vec.x) / 2 && a > c && b > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[3] = tile_type;
+                                    if (int.Parse(tile_num) - 1 >= 0 && int.Parse(tile_num) % map.size_y != 0)
+                                    {
+                                        map.map_info[int.Parse(tile_num) - 1].river[0] = tile_type;
+                                    }
                                 }
-                                else if (hit.point.x - vec.x < 0)
+                                //  동
+                                else if (hit.point.x - vec.x < 0 && a > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].river[4] = tile_type;
+                                    if (int.Parse(tile_num) - map.size_y >= 0)
+                                    {
+                                        map.map_info[int.Parse(tile_num) - map.size_y].river[1] = tile_type;
+                                    }
                                 }
                             }
                             Matching_Tile_Sprite_Terrain();
                             break;
                         case 4:
                             vec = hit.transform.localPosition;
+                            a = Mathf.Abs(hit.point.x - vec.x);
+                            b = Mathf.Abs(hit.point.y - vec.y);
                             if (map.map_info[int.Parse(tile_num)].terrain >= 4)
                             {
-                                if (hit.point.x - vec.x > 0 && hit.point.y - vec.y > +(hit.point.x - vec.x) / 2)
+                                if (hit.point.x - vec.x > 0 && hit.point.y - vec.y > +(hit.point.x - vec.x) / 2 && a > c && b > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].road[0] = tile_type;
                                 }
-                                else if (hit.point.x - vec.x > 0 && hit.point.y - vec.y < -(hit.point.x - vec.x) / 2)
+                                else if (hit.point.x - vec.x > 0 && hit.point.y - vec.y < -(hit.point.x - vec.x) / 2 && a > c && b > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].road[2] = tile_type;
                                 }
-                                else if (hit.point.x - vec.x > 0)
+                                else if (hit.point.x - vec.x > 0 && a > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].road[1] = tile_type;
                                 }
 
-                                if (hit.point.x - vec.x < 0 && hit.point.y - vec.y > -(hit.point.x - vec.x) / 2)
+                                if (hit.point.x - vec.x < 0 && hit.point.y - vec.y > -(hit.point.x - vec.x) / 2 && a > c && b > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].road[5] = tile_type;
                                 }
-                                else if (hit.point.x - vec.x < 0 && hit.point.y - vec.y < +(hit.point.x - vec.x) / 2)
+                                else if (hit.point.x - vec.x < 0 && hit.point.y - vec.y < +(hit.point.x - vec.x) / 2 && a > c && b > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].road[3] = tile_type;
                                 }
-                                else if (hit.point.x - vec.x < 0)
+                                else if (hit.point.x - vec.x < 0 && a > c)
                                 {
                                     map.map_info[int.Parse(tile_num)].road[4] = tile_type;
                                 }
