@@ -127,6 +127,8 @@ public class Tile_Production
 public class Tile_Resource
 {
     public string tile_resource_code;   //  자원 코드
+    public string tile_resource_name;   //  자원 이름
+    public float tile_resource_value;   //  자원 가치
     public float tile_resource_amount;  //  자원량
     /*
     public float tile_tree;             //  수목량, 수량+, 인구 캡+

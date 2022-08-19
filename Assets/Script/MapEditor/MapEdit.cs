@@ -276,13 +276,6 @@ public class MapEdit : MonoBehaviour
                 else
                     tile_map.transform.GetChild(i).GetChild(5).gameObject.SetActive(false);
             }
-            if (map.map_info[i].altitude != 0)
-            {
-                for (int j = 0; j < 6; j++)
-                {
-                    map.map_info[i].river[j] = 0;
-                }
-            }
             //  도로타일 배치
             if (map.map_info[i].terrain >= 4)
             {
@@ -310,13 +303,6 @@ public class MapEdit : MonoBehaviour
                     tile_map.transform.GetChild(i).GetChild(11).gameObject.SetActive(true);
                 else
                     tile_map.transform.GetChild(i).GetChild(11).gameObject.SetActive(false);
-            }
-            if (map.map_info[i].altitude != 0)
-            {
-                for (int j = 0; j < 6; j++)
-                {
-                    map.map_info[i].road[j] = 0;
-                }
             }
         }
     }
