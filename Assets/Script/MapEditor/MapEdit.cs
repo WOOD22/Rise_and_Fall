@@ -43,10 +43,11 @@ public class MapEdit : MonoBehaviour
     public Sprite subarctic_tile;           //  8번 냉대 타일
     public Sprite polar_tile;               //  9번 한대 타일
     //  고저
-    public Sprite[] hill_tile;                //  1번 언덕 타일
-    public Sprite[] mountain_tile;            //  2번 산 타일
+    public Sprite[] hill_tile;              //  1번 언덕 타일
+    public Sprite[] mountain_tile;          //  2번 산 타일
+    //  토지비옥도
+    public Sprite[] soil_fertility_tile;    //  토지비옥도 (0 : 매우 나쁨, 1 : 나쁨, 2 : 조금 나쁨, 3 : 보통, 4 : 조금 좋음, 5 : 좋음, 6 : 매우 좋음)
 
-    public Sprite select_tile_sprite;
     public int select_layer = 1;
     public int select_tile_type;
 
@@ -54,7 +55,6 @@ public class MapEdit : MonoBehaviour
 
     void Start()
     {
-        select_tile_sprite = null_tile;
         select_tile_type = 0;
     }
 
@@ -194,7 +194,7 @@ public class MapEdit : MonoBehaviour
                     tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = polar_tile;
                     break;
             }
-            //  땅 존재 시 배치(고저 타일은 땅 타일에만 배치됨)
+            //  땅 존재 시 고저 타일 배치
             if (map.map_info[i].terrain < 4)
             {
                 map.map_info[i].altitude = 0;
@@ -251,62 +251,60 @@ public class MapEdit : MonoBehaviour
             //  강타일 배치
             if (map.map_info[i].terrain >= 4)
             {
-                if (map.map_info[i].river[0] == 1)
-                    tile_map.transform.GetChild(i).GetChild(0).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(0).gameObject.SetActive(false);
-                if (map.map_info[i].river[1] == 1)
-                    tile_map.transform.GetChild(i).GetChild(1).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(1).gameObject.SetActive(false);
-                if (map.map_info[i].river[2] == 1)
-                    tile_map.transform.GetChild(i).GetChild(2).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(2).gameObject.SetActive(false);
-                if (map.map_info[i].river[3] == 1)
-                    tile_map.transform.GetChild(i).GetChild(3).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(3).gameObject.SetActive(false);
-                if (map.map_info[i].river[4] == 1)
-                    tile_map.transform.GetChild(i).GetChild(4).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(4).gameObject.SetActive(false);
-                if (map.map_info[i].river[5] == 1)
-                    tile_map.transform.GetChild(i).GetChild(5).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(5).gameObject.SetActive(false);
+                for (int j = 0; j < 6; j++)
+                {
+                    if (map.map_info[i].river[j] == 1)
+                        tile_map.transform.GetChild(i).GetChild(j).gameObject.SetActive(true);
+                    else
+                        tile_map.transform.GetChild(i).GetChild(j).gameObject.SetActive(false);
+                }
             }
             //  도로타일 배치
             if (map.map_info[i].terrain >= 4)
             {
-                if (map.map_info[i].road[0] == 1)
-                    tile_map.transform.GetChild(i).GetChild(6).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(6).gameObject.SetActive(false);
-                if (map.map_info[i].road[1] == 1)
-                    tile_map.transform.GetChild(i).GetChild(7).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(7).gameObject.SetActive(false);
-                if (map.map_info[i].road[2] == 1)
-                    tile_map.transform.GetChild(i).GetChild(8).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(8).gameObject.SetActive(false);
-                if (map.map_info[i].road[3] == 1)
-                    tile_map.transform.GetChild(i).GetChild(9).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(9).gameObject.SetActive(false);
-                if (map.map_info[i].road[4] == 1)
-                    tile_map.transform.GetChild(i).GetChild(10).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(10).gameObject.SetActive(false);
-                if (map.map_info[i].road[5] == 1)
-                    tile_map.transform.GetChild(i).GetChild(11).gameObject.SetActive(true);
-                else
-                    tile_map.transform.GetChild(i).GetChild(11).gameObject.SetActive(false);
+                for (int j = 0; j < 6; j++)
+                {
+                    if (map.map_info[i].road[j] == 1)
+                        tile_map.transform.GetChild(i).GetChild(j + 6).gameObject.SetActive(true);
+                    else
+                        tile_map.transform.GetChild(i).GetChild(j + 6).gameObject.SetActive(false);
+                }
             }
         }
     }
-
+    //  비옥도 맵 이미지 매칭하기
+    void Matching_Tile_Sprite_Soil_Fertility()
+    {
+        for (int i = 0; i < map.size_x * map.size_y; i++)
+        {
+            tile_map.transform.GetChild(i).gameObject.SetActive(true);
+            //  비옥도 표기
+            switch (map.map_info[i].property.tile_soil_fertility)
+            {
+                case 0:
+                    tile_map.transform.GetChild(i).gameObject.SetActive(false);
+                    break;
+                case 1:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = soil_fertility_tile[1];
+                    break;
+                case 2:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = soil_fertility_tile[2];
+                    break;
+                case 3:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = soil_fertility_tile[3];
+                    break;
+                case 4:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = soil_fertility_tile[4];
+                    break;
+                case 5:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = soil_fertility_tile[5];
+                    break;
+                case 6:
+                    tile_map.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite = soil_fertility_tile[6];
+                    break;
+            }
+        }
+    }
     //  세이브 페이지 오픈
     public void OpenSavePage()
     {
@@ -408,6 +406,48 @@ public class MapEdit : MonoBehaviour
                 Matching_Tile_Sprite_Terrain();
                 select_layer = 4;
                 break;
+            case 5:
+                Matching_Tile_Sprite_Soil_Fertility();
+                select_layer = 5;
+                break;
+        }
+    }
+
+    //  타일 색칠 시 비옥도 결정
+    public void Tile_Soil_Fertility(int tile_num)
+    {
+        switch (select_tile_type)
+        {
+            case 0:
+                map.map_info[tile_num].property.tile_soil_fertility = 0;
+                break;
+            case 1:
+                map.map_info[tile_num].property.tile_soil_fertility = 0;
+                break;
+            case 2:
+                map.map_info[tile_num].property.tile_soil_fertility = 0;
+                break;
+            case 3:
+                map.map_info[tile_num].property.tile_soil_fertility = 0;
+                break;
+            case 4:
+                map.map_info[tile_num].property.tile_soil_fertility = 4;
+                break;
+            case 5:
+                map.map_info[tile_num].property.tile_soil_fertility = 3;
+                break;
+            case 6:
+                map.map_info[tile_num].property.tile_soil_fertility = 1;
+                break;
+            case 7:
+                map.map_info[tile_num].property.tile_soil_fertility = 5;
+                break;
+            case 8:
+                map.map_info[tile_num].property.tile_soil_fertility = 3;
+                break;
+            case 9:
+                map.map_info[tile_num].property.tile_soil_fertility = 1;
+                break;
         }
     }
 
@@ -469,6 +509,7 @@ public class MapEdit : MonoBehaviour
                                 }
                             }
                             Matching_Tile_Sprite_Terrain();
+                            Tile_Soil_Fertility(int.Parse(tile_num));
                             break;
                         case 2:
                             map.map_info[int.Parse(tile_num)].altitude = tile_type;
