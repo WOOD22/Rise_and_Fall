@@ -51,7 +51,7 @@ public class MapEdit : MonoBehaviour
     public int select_layer = 1;
     public int select_tile_type;
 
-    public bool is_tool_pen = true;
+    public bool is_tool_pen = false;
 
     void Start()
     {
@@ -413,7 +413,7 @@ public class MapEdit : MonoBehaviour
         }
     }
 
-    //  타일 색칠 시 비옥도 결정
+    //  타일 색칠 시 비옥도 & 홀딩 크기, 고도
     public void Tile_Soil_Fertility(int tile_num)
     {
         switch (select_tile_type)
@@ -431,23 +431,35 @@ public class MapEdit : MonoBehaviour
                 map.map_info[tile_num].property.tile_soil_fertility = 0;
                 break;
             case 4:
-                map.map_info[tile_num].property.tile_soil_fertility = 4;
+                map.map_info[tile_num].property.tile_soil_fertility = 2;
                 break;
             case 5:
-                map.map_info[tile_num].property.tile_soil_fertility = 3;
+                map.map_info[tile_num].property.tile_soil_fertility = 2;
                 break;
             case 6:
                 map.map_info[tile_num].property.tile_soil_fertility = 1;
                 break;
             case 7:
-                map.map_info[tile_num].property.tile_soil_fertility = 5;
+                map.map_info[tile_num].property.tile_soil_fertility = 3;
                 break;
             case 8:
-                map.map_info[tile_num].property.tile_soil_fertility = 3;
+                map.map_info[tile_num].property.tile_soil_fertility = 2;
                 break;
             case 9:
                 map.map_info[tile_num].property.tile_soil_fertility = 1;
                 break;
+        }
+        //  홀딩 초기 설정
+        void holding_setting(int altitude_min, int altitude_max)
+        {
+            int holding_size = UnityEngine.Random.Range(10, 20);
+            for (int i = 0; i < holding_size; i++)
+            {
+                Holding new_holding = new Holding();
+                new_holding.holding_code = "B000";
+                new_holding.holding_altitude = UnityEngine.Random.Range(altitude_min, altitude_max);
+                map.map_info[tile_num].holding.Add(new_holding);
+            }
         }
     }
 
@@ -620,9 +632,9 @@ public class MapEdit : MonoBehaviour
         }
     }
     //  펜 활성화
-    public void Tool_Use_Pen(bool on_off)
+    public void Tool_Use_Pen()
     {
-        if (on_off)
+        if (!is_tool_pen)
             is_tool_pen = true;
         else
             is_tool_pen = false;
